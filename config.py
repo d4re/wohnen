@@ -1,9 +1,9 @@
 from logging import DEBUG, INFO, WARNING, ERROR
 
-data_path = "/home/pegro/wohnen/"
+data_path = "/home/pegro/wohnen/data/main"
 
 loglevel = DEBUG
-logfile = "/home/pegro/wohnen/scrape.log"
+logfile = f"{data_path}/scrape.log"
 
 name_from = "Wohnungsschnüffler"
 email_from = "wo-schnueffi@example.com"
