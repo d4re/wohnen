@@ -18,9 +18,13 @@ args = parser.parse_args()
 logger = logging.getLogger()
 logger.setLevel(config.loglevel)
 
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s', "%Y-%m-%d %H:%M:%S")
+if hasattr(config, 'logfile'):
+    fh = logging.FileHandler(config.logfile)
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
 ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s', "%Y-%m-%d %H:%M:%S")
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 

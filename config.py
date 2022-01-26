@@ -2,6 +2,7 @@ from logging import DEBUG, INFO, WARNING, ERROR
 
 jsonfile = "/home/benedikt/wohnen.json"
 loglevel = DEBUG
+logfile = "/home/pegro/wohnen/scrape.log"
 
 name_from = "Wohnungsschnüffler"
 email_from = "wo-schnueffi@example.com"
