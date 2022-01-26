@@ -1,13 +1,9 @@
 import argparse
 import logging
 import sys
+import importlib
+
 import config
-
-import ebaykleinanzeigen.scraper
-import ebaykleinanzeigen.parser
-
-import deutschewohnen.parser
-import deutschewohnen.scraper
 
 if __name__ == "__main__":
 
@@ -28,22 +24,29 @@ if __name__ == "__main__":
 
     for site in args.sites:
         logger.debug(site)
-        sitem = getattr(sys.modules[__name__], site)
 
         html = None
 
+        html_dump_file = f'{config.data_path}/{site}.html'
+
         if args.scrape:
-            scraper = getattr(sitem, "scraper")
+            spec_scraper = importlib.util.find_spec(f'sites.{site}.scraper')
+            if spec_scraper is None:
+                logging.error(f'Could not find scraper module for site {site}. Skipping...')
+                continue
+
+            scraper = spec_scraper.loader.load_module()
+
             html = scraper.scrape(config.min_area, config.min_rooms, config.max_rooms, config.max_rent, config.wbs)
 
             try:
-                with open(f'dumps/{site}.html', 'w') as f:
+                with open(html_dump_file, 'w') as f:
                     f.write(html.decode('utf-8'))
             except IOError as e:
                 logger.error(e)
         else:
             try:
-                with open(f'dumps/{site}.html', 'r') as f:
+                with open(html_dump_file, 'r') as f:
                     html = f.read()
             except IOError as e:
                 logger.error(e)
@@ -51,7 +54,12 @@ if __name__ == "__main__":
         if html is None:
             print('No HTML returned!')
         else:
-            parser = getattr(sitem, "parser")
+            spec_parser = importlib.util.find_spec(f'sites.{site}.parser')
+            if spec_parser is None:
+                logging.error(f'Could not find parser module for site {site}. Skipping...')
+                continue
+
+            parser = spec_parser.loader.load_module()
             flats = parser.parse(html)
 
             print([flat for flat in flats])
