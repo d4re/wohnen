@@ -1,6 +1,7 @@
 from logging import DEBUG, INFO, WARNING, ERROR
 
-jsonfile = "/home/benedikt/wohnen.json"
+data_path = "/home/pegro/wohnen/"
+
 loglevel = DEBUG
 logfile = "/home/pegro/wohnen/scrape.log"
 

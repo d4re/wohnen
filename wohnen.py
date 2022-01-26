@@ -42,7 +42,7 @@ if __name__ == "__main__":
     for site in args.sites:
         logger.debug(site)
 
-        jsonfile = JsonFile.open(config.jsonfile)
+        jsonfile = JsonFile.open(f'{config.data_path}/{site}.json')
 
         if args.formattest:
             flats = jsonfile._json
