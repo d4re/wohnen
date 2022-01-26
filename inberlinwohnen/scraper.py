@@ -6,8 +6,7 @@ logger = logging.getLogger(__name__)
 
 s = requests.Session()
 
-search_url = 'https://inberlinwohnen.de/wp-content/themes/ibw/skript/search-flats.php'
-result_url = 'https://inberlinwohnen.de/suchergebnis/'
+search_url = 'https://inberlinwohnen.de/wp-content/themes/ibw/skript/wohnungsfinder.php'
 
 search_headers = {
     'accept': '*/*',
@@ -15,12 +14,6 @@ search_headers = {
     'x-requested-with': 'XMLHttpRequest',
     'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
 }
-
-result_headers = {
-    'upgrade-insecure-requests': '1',
-    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-}
-
 
 common_headers = {
     'accept-encoding': 'gzip, deflate, br',
@@ -34,68 +27,66 @@ common_headers = {
 s.headers.update(common_headers)
 
 search_data = {
-    'q': 'srch',
-    'lang': 'de',
-    'qtype': 'advanced',
-    'order': 'mietpreis_nettokalt',
-    'odx': 'ASC',
-    'bez': '',
-    'qmiete_min': '',
-    'qmiete_max': '1000',
-    'qqm_min': '50',
-    'qqm_max': '',
-    'qrooms_min': '2',
-    'qrooms_max': '4',
-    'qetage_min': '',
-    'qetage_max': '',
-    'qbaujahr_min': '',
-    'qbaujahr_max': '',
-    'qheizung_zentral': '0',
-    'qheizung_etage': '0',
-    'qenergy_fernwaerme': '0',
-    'qheizung_nachtstrom': '0',
-    'qheizung_ofen': '0',
-    'qheizung_gas': '0',
-    'qheizung_oel': '0',
-    'qheizung_solar': '0',
-    'qheizung_erdwaerme': '0',
-    'qheizung_fussboden': '0',
-    'qbalkon_loggia_terrasse': '0',  # was 1 in my capture. verified manually that this will return flats with and without balcony
-    'qgarten': '0',
-    'qwbs': 'must_not',
-    'qbarrierefrei': '0',
-    'qmoebliert': '0',
-    'qgaeste_wc': '0',
-    'qaufzug': '0',
-    'qstellplatz': '0',
-    'qkeller': '0',
-    'qbadewanne': '0',
-    'qdusche': '0',
+    'q': 'wf-save-srch',
+    'save': False,
+    'miete_min': False,
+    'miete_max': False,
+    'qm_min': False,
+    'qm_max': False,
+    'rooms_min': 2,
+    'rooms_max': 5,
+    'etage_min': False,
+    'etage_max': False,
+    'baujahr_min': False,
+    'baujahr_max': False,
+    'heizung_zentral': False,
+    'heizung_etage': False,
+    'energy_fernwaerme': False,
+    'heizung_nachtstrom': False,
+    'heizung_ofen': False,
+    'heizung_gas': False,
+    'heizung_oel': False,
+    'heizung_solar': False,
+    'heizung_erdwaerme': False,
+    'heizung_fussboden': False,
+    'seniorenwohnung': False,
+    'maisonette': False,
+    'etagen_dg': False,
+    'balkon_loggia_terrasse': False,
+    'garten': False,
+    'wbs': 0,
+    'barrierefrei': False,
+    'gaeste_wc': False,
+    'aufzug': False,
+    'stellplatz': False,
+    'keller': False,
+    'badewanne': False,
+    'dusche': False
+}
+
+result_data = {
+    'q': 'change-wf-view',
+    'view': 'tiles',
 }
 
 def get_search(min_rooms, max_rooms, max_rent, wbs):
-    wbs_map = {
-        0: 'must_not',
-        1: 'must',
-        2: 'all',
-    }
     s = search_data.copy()
-    s['qrooms_min'] = str(min_rooms)
-    s['qrooms_max'] = str(max_rooms)
-    s['qmiete_max'] = str(max_rent)
-    s['qwbs'] = wbs_map[wbs]
+    s['rooms_min'] = str(min_rooms)
+    s['rooms_max'] = str(max_rooms)
+    s['miete_max'] = str(max_rent)
+    s['wbs'] = wbs
     return s
 
 def scrape(min_rooms, max_rooms, max_rent, wbs):
     search_d = get_search(min_rooms, max_rooms, max_rent, wbs)
     search = s.post(search_url, data=search_d, headers=search_headers)
     search.raise_for_status()
-    logger.debug("Sleeping for 5 seconds before querying for the results")
+    logger.debug("Sleeping for a second before querying for the results")
 
     # The web UI sleeps for a few seconds here, lets mimick that
     # It seemst to work without, but better to mimick more
-    time.sleep(5.0)
+    time.sleep(1.0)
 
-    html_result = s.get(result_url, headers=result_headers)
+    html_result = s.post(search_url, data=result_data, headers=search_headers)
 
     return html_result.text.encode("utf-8")
