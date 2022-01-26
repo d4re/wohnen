@@ -69,22 +69,22 @@ result_data = {
     'view': 'tiles',
 }
 
-def get_search(min_rooms, max_rooms, max_rent, wbs):
+def get_search(params):
     s = search_data.copy()
-    s['rooms_min'] = str(min_rooms)
-    s['rooms_max'] = str(max_rooms)
-    s['miete_max'] = str(max_rent)
-    s['wbs'] = wbs
+    s['rooms_min'] = str(params['rooms_min'])
+    s['rooms_max'] = str(params['rooms_max'])
+    s['miete_max'] = str(params['rent_base_max'])
+    s['wbs'] = params['wbs']
     return s
 
-def scrape(min_area, min_rooms, max_rooms, max_rent, wbs):
-    search_d = get_search(min_rooms, max_rooms, max_rent, wbs)
+def scrape(params):
+    search_d = get_search(params)
     search = s.post(search_url, data=search_d, headers=search_headers)
     search.raise_for_status()
-    logger.debug("Sleeping for a second before querying for the results")
-
+    
     # The web UI sleeps for a few seconds here, lets mimick that
     # It seemst to work without, but better to mimick more
+    logger.debug("Sleeping for a second before querying for the results")
     time.sleep(1.0)
 
     html_result = s.post(search_url, data=result_data, headers=search_headers)

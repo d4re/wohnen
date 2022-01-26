@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
             scraper = spec_scraper.loader.load_module()
 
-            html = scraper.scrape(config.min_area, config.min_rooms, config.max_rooms, config.max_rent, config.wbs)
+            html = scraper.scrape(config.query_parameters)
 
             try:
                 with open(html_dump_file, 'w') as f:

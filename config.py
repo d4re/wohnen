@@ -10,17 +10,16 @@ email_from = "wo-schnueffi@example.com"
 
 smtp_server = "localhost"
 
-
 ## Set searches
 ## This only has an effect when run with --scrape
-min_area = 42
-min_rooms = 2
-max_rooms = 5
-max_rent = 600
-# 0 = No wbs
-# 1 = only wbs
-# 2 = doesnt matter
-wbs = 0
+query_parameters = {
+    'area_min': 42,
+    'rooms_min': 2,
+    'rooms_max': 5,
+    'rent_base_max': 600,
+    'rent_total_max': 700,
+    'wbs': 0
+}
 
 filter = {
     'allow': {
