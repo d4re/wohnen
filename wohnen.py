@@ -4,6 +4,8 @@ import logging
 
 import inberlinwohnen.parser
 import inberlinwohnen.scraper
+import ebaykleinanzeigen.parser
+import ebaykleinanzeigen.scraper
 from jsonfile import JsonFile
 import sendemail
 import config
