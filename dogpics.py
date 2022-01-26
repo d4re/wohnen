@@ -2,7 +2,7 @@
 
 import random
 import time
-from urlparse import urljoin
+from urllib.parse import urljoin
 import logging
 
 import requests
@@ -52,5 +52,5 @@ def get_random_dogpic():
         return DEFAULTDOG
 
 if __name__ == "__main__":
-    print "Default:", DEFAULTDOG
-    print get_random_dogpic()
+    print("Default:", DEFAULTDOG)
+    print(get_random_dogpic())
