@@ -15,8 +15,8 @@ smtp_server = "localhost"
 ## This only has an effect when run with --scrape
 min_area = 42
 min_rooms = 2
-max_rooms = 4
-max_rent = 1000
+max_rooms = 5
+max_rent = 600
 # 0 = No wbs
 # 1 = only wbs
 # 2 = doesnt matter
