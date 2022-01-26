@@ -11,6 +11,7 @@ import config
 parser = argparse.ArgumentParser()
 parser.add_argument("sites", type=str, nargs='+', help="list of sites to check")
 parser.add_argument("--scrape", action="store_true", help="actually scrape")
+parser.add_argument("--quiet", action="store_true", help="hide log output")
 parser.add_argument("--email", type=str, nargs="+", help="email addresses to send notify about new flats")
 
 args = parser.parse_args()
@@ -23,10 +24,12 @@ if hasattr(config, 'logfile'):
     fh = logging.FileHandler(config.logfile)
     fh.setFormatter(formatter)
     logger.addHandler(fh)
-ch = logging.StreamHandler(sys.stdout)
-ch.setLevel(logging.DEBUG)
-ch.setFormatter(formatter)
-logger.addHandler(ch)
+
+if not args.quiet:
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.DEBUG)
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
 
 def get_sample(site):
     logger.warning("Using sample file for {}".format(site))
