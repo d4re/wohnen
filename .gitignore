@@ -59,5 +59,3 @@ index.txt
 
 # Ansible
 *.retry
-
-dumps/
