@@ -3,8 +3,8 @@ from logging import DEBUG, INFO, WARNING, ERROR
 jsonfile = "/home/benedikt/wohnen.json"
 loglevel = DEBUG
 
-
-email_from = "benedikt@sudo.is"
+name_from = "Wohnungsschnüffler"
+email_from = "wo-schnueffi@example.com"
 
 smtp_server = "localhost"
 

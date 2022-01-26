@@ -3,56 +3,71 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.header import Header
 import logging
 
 import config
 import dogpics
 
+from jinja2 import Environment, select_autoescape
+env = Environment(
+    autoescape=select_autoescape()
+)
+
 logger = logging.getLogger(__name__)
 
-message_greetings = u"""
-I found {} new flats!
+tpl_text_email = u"""Dog: {{dogpic}}
 
-"""
-
-message_flat = u"""
-Address: {addr}
-Kiez: {kiez}
-
-Cold rent: €{kalt}
-Warm rent: €{total}
-
-Size: {sqm} m²
-
-Link: {link}
-"""
-
-html_message_flat = u"""
-<p>
-<a href="{link}"><b>Address</b>: {addr}</a> <br>
-<b>Kiez</b>: {kiez} <br>
-
-<b>Cold rent</b>: €{kalt}  <br>
-<b>Warm rent</b>: €{total}  <br>
-
-<b>Size</b>: {sqm} m²  <br>
-</p>
-"""
-
-
-section = u"""
 ===
+
+'Schab {{flats|length}} neue Inserate!
+
+{% for flat in flats %}
+
+Titel: {{flat.title}}
+Link: {{flat.link}}
+
+Adresse: {{flat.addr}} {% if flat.kiez|length %}({{flat.kiez}}){% endif %}
+{% if flat.pos %}Google Maps: https://www.google.de/maps/place/{{flat.pos.lat}},{{flat.pos.long}}{% endif %}
+
+Angebotsdetails:{% for key, value in flat.properties.items() %}
+- {{key}}: {{value}}{% endfor %}
+{% if flat.landlord|length %}- Vermieter: {{flat.landlord}}
+{% if flat.features|length %}
+Besonderheiten:{% for feature in flat.features %}
+- {{feature}}{% endfor %}
+{% endif %}{% endif %}
+========{% endfor %}
 """
 
-html_section = u"""<hr>"""
+tpl_html_email = u"""
+<h3>'Schab {{flats|length}} neue Inserate!</h3>
 
-dog = u"""
-Dog: {dog}
+<p><img src="{{dogpic}}" /></p>
+
+{% for flat in flats %}
+<p>
+<a href="{{flat.link}}">{{flat.title}}</a><br />
+<br />
+Addresse: {{flat.addr}} {% if flat.kiez|length %}({{flat.kiez}}){% endif %}{% if flat.pos %} (<a href="https://www.google.de/maps/place/{{flat.pos.lat}},{{flat.pos.long}}">Google Maps</a>){% endif %}<br />
+<br />
+Angebotsdetails:<br/>
+<ul>{% for key, value in flat.properties.items() %}
+<li>{{key}}: {{value}}</li>{% endfor %}
+{% if flat.landlord|length %}<li>Vermieter: {{flat.landlord}}</li>{% endif %}
+</ul>
+<br />
+{% if flat.features|length %}
+Besonderheiten:<br/>
+<ul>
+{% for feature in flat.features %}
+<li>{{feature}}</li>{% endfor %}
+</ul>
+<br />
+{% endif %}
+<hr />
+{% endfor %}
 """
-
-html_dog = u"""<p><img src="{dog}"></p>"""
-
-
 
 def get_dogpic():
     try:
@@ -62,40 +77,44 @@ def get_dogpic():
         return dogpics.DEFAULTDOG
 
 
-def create_html_email_body(flats, dogpic):
-    flatmsgs = html_section.join([html_message_flat.format(**a) for a in flats])
-    msg = message_greetings.format(len(flats)) + html_dog.format(dog=dogpic) + flatmsgs
-    return msg
+def create_email_body(flats, dogpic, tpl):
+    template = env.from_string(tpl)
 
-def create_email_body(flats, dogpic):
-    flatmsgs = section.join([message_flat.format(**a) for a in flats])
-    msg = message_greetings.format(len(flats)) + section + flatmsgs
-    plain = dog.format(dog=dogpic) + section + msg
-    return plain
+    return template.render(flats=flats, dogpic=dogpic)
 
-def create_email(flats, emails):
+def create_email(flats, emails, site):
     dogpic = get_dogpic()
 
     msg = MIMEMultipart('alternative')
 
-    plain = MIMEText(create_email_body(flats, dogpic), "text", _charset="utf-8")
-    html = MIMEText(create_html_email_body(flats, dogpic), "html", _charset="utf-8")
+    plain = MIMEText(create_email_body(flats, dogpic, tpl_text_email), "text", _charset="utf-8")
+    html = MIMEText(create_email_body(flats, dogpic, tpl_html_email), "html", _charset="utf-8")
     msg.attach(plain)
     msg.attach(html)
 
-    msg['Subject'] = "Found {} new flats".format(len(flats))
-    msg["From"] = config.email_from
+    email_from = Header(config.name_from, 'utf-8')
+    email_from.append(f'<{config.email_from}>', 'ascii')
+
+    msg['Subject'] = f'{len(flats)} neue Wohnungen auf {site}'
+    msg["From"] = email_from
     msg["To"] = ", ".join(emails)
     return msg
 
-def send_email(flats, emails):
-    msg = create_email(flats, emails)
+def send_email(flats, emails, site):
+    msg = create_email(flats, emails, site)
 
     try:
         logger.info("Sending email to: {}".format(", ".join(emails)))
         s = smtplib.SMTP(config.smtp_server)
-        s.sendmail(config.email_from, emails, msg.as_string())
+        s.sendmail(msg["From"].__str__(), emails, msg.as_string())
         s.quit()
     except Exception as e:
         logger.error(e)
+        logger.debug(msg.as_string())
         raise
+
+def test_format_body(flats_gen):
+    flats = []
+    for flat in flats_gen:
+        flats.append(flat)
+    print(create_email_body(flats, dogpics.DEFAULTDOG, tpl_html_email))
