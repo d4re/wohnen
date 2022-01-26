@@ -6,6 +6,9 @@ import inberlinwohnen.parser
 import inberlinwohnen.scraper
 import ebaykleinanzeigen.parser
 import ebaykleinanzeigen.scraper
+import deutschewohnen.parser
+import deutschewohnen.scraper
+
 from jsonfile import JsonFile
 import sendemail
 import config
