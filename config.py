@@ -13,6 +13,7 @@ smtp_server = "localhost"
 
 ## Set searches
 ## This only has an effect when run with --scrape
+min_area = 42
 min_rooms = 2
 max_rooms = 4
 max_rent = 1000

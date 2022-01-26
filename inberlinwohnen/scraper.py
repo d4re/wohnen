@@ -77,7 +77,7 @@ def get_search(min_rooms, max_rooms, max_rent, wbs):
     s['wbs'] = wbs
     return s
 
-def scrape(min_rooms, max_rooms, max_rent, wbs):
+def scrape(min_area, min_rooms, max_rooms, max_rent, wbs):
     search_d = get_search(min_rooms, max_rooms, max_rent, wbs)
     search = s.post(search_url, data=search_d, headers=search_headers)
     search.raise_for_status()
