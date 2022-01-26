@@ -16,11 +16,14 @@ env = Environment(
 
 logger = logging.getLogger(__name__)
 
-tpl_text_email = u"""Dog: {{dogpic}}
+tpl_text_email = u"""Hundi: {{dogpic}}
+
+Duuuu, ich rieche neue neue Inserate! *schwanzwedel*
 
 ===
 
-'Schab {{flats|length}} neue Inserate!
+{% for site in sites %}
+Bei {{site|capitalize}} gibt's {{flats|length}} neue Angebote:
 
 {% for flat in flats %}
 
@@ -38,12 +41,17 @@ Besonderheiten:{% for feature in flat.features %}
 - {{feature}}{% endfor %}
 {% endif %}{% endif %}
 ========{% endfor %}
+
+{% endfor %}
 """
 
 tpl_html_email = u"""
-<h3>'Schab {{flats|length}} neue Inserate!</h3>
+<h3>Duuuu, ich rieche neue neue Inserate! *schwanzwedel*</h3>
 
 <p><img src="{{dogpic}}" /></p>
+
+{% for site, flats in sites.items() %}
+<h4>Bei {{site|capitalize}} gibt's <strong>{{flats|length}}</strong> neue Angebote</h4>
 
 {% for flat in flats %}
 <p>
@@ -67,6 +75,8 @@ Besonderheiten:<br/>
 {% endif %}
 <hr />
 {% endfor %}
+<br /><br />
+{% endfor %}
 """
 
 def get_dogpic():
@@ -77,31 +87,37 @@ def get_dogpic():
         return dogpics.DEFAULTDOG
 
 
-def create_email_body(flats, dogpic, tpl):
+def create_email_body(sites, dogpic, tpl):
     template = env.from_string(tpl)
 
-    return template.render(flats=flats, dogpic=dogpic)
+    return template.render(sites=sites, dogpic=dogpic)
 
-def create_email(flats, emails, site):
+def create_email(sites, emails):
     dogpic = get_dogpic()
 
     msg = MIMEMultipart('alternative')
 
-    plain = MIMEText(create_email_body(flats, dogpic, tpl_text_email), "text", _charset="utf-8")
-    html = MIMEText(create_email_body(flats, dogpic, tpl_html_email), "html", _charset="utf-8")
+    plain = MIMEText(create_email_body(sites, dogpic, tpl_text_email), "text", _charset="utf-8")
+    html = MIMEText(create_email_body(sites, dogpic, tpl_html_email), "html", _charset="utf-8")
     msg.attach(plain)
     msg.attach(html)
 
     email_from = Header(config.name_from, 'utf-8')
     email_from.append(f'<{config.email_from}>', 'ascii')
 
-    msg['Subject'] = f'{len(flats)} neue Wohnungen auf {site}'
+    new_flats = sum([len(flats) for flats in sites.values()])
+    if new_flats == 1:
+        new_msg = 'neues Wohnungsangebot'
+    else:
+        new_msg = 'neue Wohnungsangebote'
+
+    msg['Subject'] = Header(f'{new_flats} {new_msg} erschnüffelt', 'utf-8')
     msg["From"] = email_from
     msg["To"] = ", ".join(emails)
     return msg
 
-def send_email(flats, emails, site):
-    msg = create_email(flats, emails, site)
+def send_email(sites, emails):
+    msg = create_email(sites, emails)
 
     try:
         logger.info("Sending email to: {}".format(", ".join(emails)))
@@ -113,8 +129,5 @@ def send_email(flats, emails, site):
         logger.debug(msg.as_string())
         raise
 
-def test_format_body(flats_gen):
-    flats = []
-    for flat in flats_gen:
-        flats.append(flat)
-    print(create_email_body(flats, dogpics.DEFAULTDOG, tpl_html_email))
+def test_format_body(sites):
+    print(create_email_body(sites, dogpics.DEFAULTDOG, tpl_html_email))

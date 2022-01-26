@@ -39,15 +39,15 @@ def get_sample(site):
         return f.read()
 
 if __name__ == "__main__":
+    sites = {}
+
     for site in args.sites:
         logger.debug(site)
 
         jsonfile = JsonFile.open(f'{config.data_path}/{site}.json')
 
         if args.formattest:
-            flats = jsonfile._json
-
-            sendemail.test_format_body(flats)
+            sites[site] = jsonfile._json
             continue
         
         if args.scrape:
@@ -77,12 +77,17 @@ if __name__ == "__main__":
         # add remaining flats to the list
         jsonfile.add_list(flats)
 
-        newflats = jsonfile.new_items[:]
-
         if jsonfile.new_item_count > 0:
             logging.info("Found {} new flats".format(jsonfile.new_item_count))
+            sites[site] = jsonfile.new_items[:]
 
         jsonfile.save()
 
-        if args.email and len(newflats) > 0:
-            sendemail.send_email(newflats, args.email, site)
+    if len(sites) == 0:
+        logging.info("Nothing to report")
+        sys.exit(0)
+
+    if args.formattest or not args.email:
+        sendemail.test_format_body(sites)
+    else:
+        sendemail.send_email(sites, args.email)
