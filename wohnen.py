@@ -1,13 +1,7 @@
 import sys
 import argparse
 import logging
-
-import inberlinwohnen.parser
-import inberlinwohnen.scraper
-import ebaykleinanzeigen.parser
-import ebaykleinanzeigen.scraper
-import deutschewohnen.parser
-import deutschewohnen.scraper
+import importlib
 
 from jsonfile import JsonFile
 import sendemail
@@ -55,16 +49,25 @@ if __name__ == "__main__":
 
             sendemail.test_format_body(flats)
             continue
-
-        sitem = getattr(sys.modules[__name__], site)
+        
         if args.scrape:
-            scraper = getattr(sitem, "scraper")
+            spec_scraper = importlib.util.find_spec(f'sites.{site}.scraper')
+            if spec_scraper is None:
+                logging.error(f'Could not find scraper module for site {site}. Skipping...')
+                continue
+
+            scraper = spec_scraper.loader.load_module()
+
             html = scraper.scrape(config.min_area, config.min_rooms, config.max_rooms, config.max_rent, config.wbs)
         else:
-            scraper = None
             html = get_sample(site)
 
-        parser = getattr(sitem, "parser")
+        spec_parser = importlib.util.find_spec(f'sites.{site}.parser')
+        if spec_parser is None:
+            logging.error(f'Could not find parser module for site {site}. Skipping...')
+            continue
+
+        parser = spec_parser.loader.load_module()
         flats = parser.parse(html)
 
         # filter flats
