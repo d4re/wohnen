@@ -7,6 +7,7 @@ import inberlinwohnen.scraper
 from jsonfile import JsonFile
 import sendemail
 import config
+import flatfilter
 
 parser = argparse.ArgumentParser()
 parser.add_argument("sites", type=str, nargs='+', help="list of sites to check")
@@ -61,6 +62,11 @@ if __name__ == "__main__":
         parser = getattr(sitem, "parser")
         flats = parser.parse(html)
 
+        # filter flats
+        flats = flatfilter.filter_list(flats)
+        logging.debug(f"Found {len(flats)} valid flats")
+
+        # add remaining flats to the list
         jsonfile.add_list(flats)
 
         newflats = jsonfile.new_items[:]
