@@ -12,7 +12,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("sites", type=str, nargs='+', help="list of sites to check")
 parser.add_argument("--scrape", action="store_true", help="actually scrape")
 parser.add_argument("--quiet", action="store_true", help="hide log output")
-parser.add_argument("--email", type=str, nargs="+", help="email addresses to send notify about new flats")
+parser.add_argument("--email", type=str, action='append', help="email addresses to send notify about new flats")
+parser.add_argument("--formattest", action="store_true", help="test email formatting")
 
 args = parser.parse_args()
 
@@ -40,6 +41,15 @@ def get_sample(site):
 if __name__ == "__main__":
     for site in args.sites:
         logger.debug(site)
+
+        jsonfile = JsonFile.open(config.jsonfile)
+
+        if args.formattest:
+            flats = jsonfile._json
+
+            sendemail.test_format_body(flats)
+            continue
+
         sitem = getattr(sys.modules[__name__], site)
         if args.scrape:
             scraper = getattr(sitem, "scraper")
@@ -51,7 +61,6 @@ if __name__ == "__main__":
         parser = getattr(sitem, "parser")
         flats = parser.parse(html)
 
-        jsonfile = JsonFile.open(config.jsonfile)
         jsonfile.add_list(flats)
 
         newflats = jsonfile.new_items[:]
