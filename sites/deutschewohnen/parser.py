@@ -89,15 +89,29 @@ def parse(html_input):
 
         # Eigenschaften
         flat_dict['properties'] = {}
+        possible_fields = {
+            'detailType': 'Wohnungstyp',
+            'price': 'Gesamtmiete',
+            'heatingCosts': 'Heizkosten',
+            'area': 'Fläche',
+            'rooms': 'Zimmer',
+            'level': 'Etage',
+            'isTopLevel': 'Oberstes Stockwerk'
+        }
+        for field, name in possible_fields.items():
+            if field not in flat:
+                continue
 
-        flat_dict['properties']['Wohnungstyp'] = flat['detailType']
-        flat_dict['properties']['Gesamtmiete'] = f"{flat['price']} €"
-        if 'heatingCosts' in flat:
-            flat_dict['properties']['Heizkosten'] = f"{flat['heatingCosts']} €"
-        flat_dict['properties']['Fläche'] = f"{flat['area']} m²"
-        flat_dict['properties']['Zimmer'] = flat['rooms']
-        flat_dict['properties']['Etage'] = flat['level']
-        flat_dict['properties']['Oberstes Stockwerk'] = 'Ja' if flat['isTopLevel'] else 'Nein'
+            value = str(flat[field])
+
+            if field in ['price', 'heatingCosts']:
+                value += ' €'
+            elif field == 'area':
+                value += ' m²'
+            elif field == 'isTopLevel':
+                value = 'Ja' if value else 'Nein'
+
+            flat_dict['properties'][name] = value
 
         flat_dict['features'] = []
         flat_dict['landlord'] = 'Deutsche Wohnen'
