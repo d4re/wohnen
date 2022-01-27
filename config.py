@@ -25,7 +25,7 @@ filter = {
     'allow': {
     },
     'block' : {
-        'title' : ['suche wohnung', 'tausche', 'tauschwohnung', 'zwischenmiete', 'untermiete', 'nur tausch', 'wohnungstausch', 'zum tausch', 'tausch!', '*tausch*', 'tausch:', 'tausch wohnung', 'tauch wohnung', 'sublet', 'auf zeit', ' wg ', ' wg-', 'wg zimmer', ' suche eine ', '*wbs*'],
+        'title' : ['suche wohnung', 'tausche', 'tauschwohnung', 'zwischenmiete', 'untermiete', 'im tausch', 'nur tausch', 'wohnungstausch', 'zum tausch', 'tausch!', '*tausch*', 'tausch:', 'tausch wohnung', 'tauch wohnung', 'sublet', 'auf zeit', ' wg ', ' wg-', 'wg zimmer', ' suche eine ', '*wbs*', 'mit wbs', 'ferienwohnung', 'ferien wohnung', 'monteur'],
         'kiez': ['steglitz', 'zehlendorf', 'wannsee', 'mariendorf', 'marienfelde', 'buckow', 'wilhelmsruh', 'dahlem', 'spandau', 'wittenau', 'tegel', 'grunewald', 'lichterfelde', 'lankwitz', 'lichtenrade', 'gropiusstadt', 'rudow', 'adlershof', 'köpenick', 'grünau', 'biesdorf', 'mahlsdorf', 'friedrichsfelde', 'kaulsdorf', 'hellersdorf', 'marzahn', 'hohenschönhausen', 'heinersdorf', 'buch', 'märkisches viertel', 'rosenthal', 'blankenburg', 'hermsdorf', 'falkenhagener feld', 'staaken', 'friedenau', 'westend', 'lübars', 'haselhorst', 'siemensstadt']
     }
 }
