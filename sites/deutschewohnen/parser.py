@@ -92,7 +92,8 @@ def parse(html_input):
 
         flat_dict['properties']['Wohnungstyp'] = flat['detailType']
         flat_dict['properties']['Gesamtmiete'] = f"{flat['price']} €"
-        flat_dict['properties']['Heizkosten'] = f"{flat['heatingCosts']} €"
+        if 'heatingCosts' in flat:
+            flat_dict['properties']['Heizkosten'] = f"{flat['heatingCosts']} €"
         flat_dict['properties']['Fläche'] = f"{flat['area']} m²"
         flat_dict['properties']['Zimmer'] = flat['rooms']
         flat_dict['properties']['Etage'] = flat['level']
