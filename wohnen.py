@@ -49,7 +49,7 @@ if __name__ == "__main__":
         if args.formattest:
             sites[site] = jsonfile._json
             continue
-        
+
         if args.scrape:
             spec_scraper = importlib.util.find_spec(f'sites.{site}.scraper')
             if spec_scraper is None:
@@ -68,11 +68,15 @@ if __name__ == "__main__":
             continue
 
         parser = spec_parser.loader.load_module()
-        flats = parser.parse(html)
+        try:
+            flats = parser.parse(html)
 
-        # filter flats
-        flats = flatfilter.filter_list(flats)
-        logging.debug(f"Found {len(flats)} valid flats")
+            # filter flats
+            flats = flatfilter.filter_list(flats)
+            logging.debug(f"Found {len(flats)} valid flats")
+        except Exception as e:
+            logging.exception("parsing or filtering failed")
+            continue
 
         # add remaining flats to the list
         jsonfile.add_list(flats)
