@@ -93,6 +93,15 @@ filter = {
             'lübars',
             'haselhorst',
             'siemensstadt'
+        ],
+        'Beschreibung': [ # ebay kleinanzeigen field
+            'das zweite foto',
+            'vielzahl an nachrichten',
+            'untermieten',
+            'untervermieten',
+            'untermieter',
+            'nur tausch',
+            'zum tausch'
         ]
     }
 }
