@@ -22,8 +22,13 @@ def filter_list(flats):
         
         # now check the block list
         for field in config.filter['block']:
+            if field in flat:                 # try direct fields
+                string = flat[field].lower()
+            elif field in flat['properties']: # try also properties
+                string = flat['properties'][field].lower()
+
             for word in config.filter['block'][field]:
-                if word in flat[field].lower():
+                if word in string:
                     logging.info(f"Skipped entry \"{flat['title']}\" due to \"{word}\" in {field}")
                     skip = True
         if not skip:
