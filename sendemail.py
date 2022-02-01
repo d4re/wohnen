@@ -22,7 +22,7 @@ Duuuu, ich rieche neue neue Inserate! *schwanzwedel*
 
 ===
 
-{% for site in sites %}
+{% for site, flats in sites.items() %}
 Bei {{site|capitalize}} gibt's {{flats|length}} neue Angebote:
 
 {% for flat in flats %}
