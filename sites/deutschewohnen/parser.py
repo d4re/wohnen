@@ -77,7 +77,7 @@ def parse(html_input):
         flat_dict['addr'] = f"{flat['address']['street']} {flat['address']['houseNumber']}, {flat['address']['zip']} {flat['address']['city']}"
         flat_dict['kiez'] = ''
         if 'district' in flat['address']:
-          flat['kiez'] = flat['address']['district']
+          flat_dict['kiez'] = flat['address']['district']
 
         flat_dict['link'] = quote(urljoin(object_url, flat['id']), safe=":/")
 
