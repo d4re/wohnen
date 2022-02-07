@@ -19,7 +19,7 @@ feature_map = {
     'LOGGIA': 'Loggia',
     'TERRACE': 'Terasse',
     'GARDEN': 'Garten',
-    'GARDEN_SHARE': 'Garten zum Mitbenutzen',
+    'GARDEN_SHARED': 'Garten zum Mitbenutzen',
     'UNDERGROUND_PARKING': 'Tiefgarage',
     'PARKING_AREA': 'Stellplatz',
     'BATH_WITH_WINDOW': 'Bad mit Fenster',
@@ -33,6 +33,13 @@ feature_map = {
     'GROUND_FLOOR': 'Erdgeschoss',
     'PETS_ALLOWED': 'Haustiere erlaubt',
     'FLAT_SHARE_POSSIBLE': 'WG tauglich'
+}
+
+price_type_map = {
+    'RENT_INCLUDING_HEATING': 'Warmmiete',
+    'COLD_RENT': 'Kaltmiete',
+    'NET_COLD_RENT': 'Nettokaltmiete',
+    'SQUARE_METER_PRICE': 'Euro/m²'
 }
 
 def parse(html_input):
@@ -80,13 +87,7 @@ def parse(html_input):
 
         flat_dict['link'] = quote(urljoin(object_url, flat['onlineId']), safe=":/")
 
-        # flat['prices'] -> list
-        # {
-        #   'type': RENT_INCLUDING_HEATING, COLD_RENT
-        #   'amountMin': 
-        # }
-
-         # Bild
+        # Bild
         if 'pictures' in flat and len(flat['pictures']) > 0:
           flat_dict['image'] = quote(flat['pictures'][0]['imageUri'], safe=":/")
 
@@ -94,9 +95,21 @@ def parse(html_input):
 
         flat_dict['properties'] = {
             'Räume': flat['roomsMin'],
+            'Fläche': f"{flat['primaryArea']['sizeMin']} m²"
         }
         if 'contructionYear' in flat:
             flat_dict['properties']['Baujahr'] = flat['constructionYear']
+        for price in flat['prices']:
+            if 'type' not in price:
+                continue
+            # special case: omit duplicate if cold rent is already a property
+            if price['type'] == 'NET_COLD_RENT' and 'Kaltmiete' in flat_dict['properties']:
+                continue
+            if price['type'] in price_type_map:
+                name = price_type_map[price['type']]
+            else:
+                name = price['type']
+            flat_dict['properties'][name] = f"{price['amountMin']} €"
 
         flat_dict['features'] = []
         for feature in flat['features']:
