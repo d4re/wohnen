@@ -40,8 +40,10 @@ if __name__ == "__main__":
             html = scraper.scrape(config.query_parameters)
 
             try:
-                with open(html_dump_file, 'w') as f:
-                    f.write(html.decode('utf-8'))
+                with open(html_dump_file, 'w', encoding="utf-8") as f:
+                    if isinstance(html, bytes):
+                        html = html.decode('utf-8')
+                    f.write(html)
             except IOError as e:
                 logger.error(e)
         else:
