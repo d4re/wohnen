@@ -1,7 +1,7 @@
 import json
 import requests
 
-search_url_tpl = 'https://www.immowelt.de/liste/berlin/wohnungen/mieten?ami={area_min}&d=true&efs=CERTIFICATE_OF_ELIGIBILITY&efs=NEW_BUILDING_PROJECT&pma={rent_base_max}&rmi={rooms_min}&sd=DESC&sf=RELEVANCE&sp=1'
+search_url_tpl = 'https://www.immowelt.de/liste/berlin/wohnungen/mieten?ami={area_min}&d=true&efs=CERTIFICATE_OF_ELIGIBILITY&efs=NEW_BUILDING_PROJECT&pma={rent_base_max}&rmi={rooms_min}&sd=DESC&sf=TIMESTAMP&sp=1'
 # search_url = 'https://api.immowelt.com/residentialsearch/v1/searches'
 
 search_data = {
