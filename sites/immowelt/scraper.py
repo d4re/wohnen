@@ -4,22 +4,22 @@ import requests
 search_url_tpl = 'https://www.immowelt.de/liste/berlin/wohnungen/mieten?ami={area_min}&d=true&efs=CERTIFICATE_OF_ELIGIBILITY&efs=NEW_BUILDING_PROJECT&pma={rent_base_max}&rmi={rooms_min}&sd=DESC&sf=TIMESTAMP&sp=1'
 # search_url = 'https://api.immowelt.com/residentialsearch/v1/searches'
 
-search_data = {
-    "estateType": "APARTMENT",
-    "distributionTypes": ["RENT", "LEASE"], 
-    "estateSubtypes": [], 
-    "locationIds": [150696], 
-    "featureFilters": [], 
-    "excludedFeatureFilters": ["NEW_BUILDING_PROJECT"],
-    "primaryPrice": {"max": 900}, 
-    "primaryArea": {"min": 40}, 
-    "areas": [{"areaType": "PLOT_AREA"}], 
-    "rooms": {"min": 2}, 
-    "geoRadius": {"point": {"lat": 52.50153956329474, "lon": 13.402144821833788}}, 
-    "sort": {"direction": "DESC", "field": "RELEVANCE"}, 
-    "immoItemTypes": ["ESTATE", "PROJECT"], 
-    "paging": {"size": 20, "page": 0}
-}
+# search_data = {
+#     "estateType": "APARTMENT",
+#     "distributionTypes": ["RENT", "LEASE"], 
+#     "estateSubtypes": [], 
+#     "locationIds": [150696], 
+#     "featureFilters": [], 
+#     "excludedFeatureFilters": ["NEW_BUILDING_PROJECT"],
+#     "primaryPrice": {"max": 900}, 
+#     "primaryArea": {"min": 40}, 
+#     "areas": [{"areaType": "PLOT_AREA"}], 
+#     "rooms": {"min": 2}, 
+#     "geoRadius": {"point": {"lat": 52.50153956329474, "lon": 13.402144821833788}}, 
+#     "sort": {"direction": "DESC", "field": "RELEVANCE"}, 
+#     "immoItemTypes": ["ESTATE", "PROJECT"], 
+#     "paging": {"size": 20, "page": 0}
+# }
 
 search_headers = {
     'accept': '*/*',

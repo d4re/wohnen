@@ -63,8 +63,6 @@ def parse(html_input):
     logger.info("Will parse {} flats".format(len(all_flats)))
 
     for flat in all_flats:
-        print(flat)
-        
         flat_dict = {}
 
         flat_dict['title'] = flat['title']
