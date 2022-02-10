@@ -51,7 +51,7 @@ def scrape(params):
     search=requests.get(search_url, headers = search_headers)
     search.raise_for_status()
 
-    # override encoding by real educated guess as provided by chardet
-    search.encoding = search.apparent_encoding
+    # override encoding by real educated guess
+    search.encoding = 'utf-8'
 
     return search.text
