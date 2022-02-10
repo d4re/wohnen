@@ -17,7 +17,7 @@ query_parameters = {
     'rooms_min': 2,
     'rooms_max': 5,
     'rent_base_max': 600,
-    'rent_total_max': 700,
+    'rent_total_max': 770,
     'wbs': 0
 }
 
@@ -28,8 +28,13 @@ filter = {
         'title' : [
             'untermiete',
             'zwischenmiete',
+            'zwischemiete',
             'suche wohnung',
             'suche 1',
+            'suche 2',
+            'suche eine ',
+            'suche ein zimmer',
+            'zum teilen',
             'nur tauch',
             'tausch',
             'tauch wohnung',
@@ -38,10 +43,11 @@ filter = {
             'sublet',
             'auf zeit',
             'kurzzeit',
+            ' tage ',
             ' week',
             ' month',
-            ' Wochen',
-            ' Monate',
+            ' wochen',
+            ' monate',
             ' wg ',
             ' wg-',
             'wg zimmer',
@@ -50,9 +56,9 @@ filter = {
             'er-wg',
             'wohngemeinschaft',
             'shared apartment',
-            ' suche eine ',
             '*wbs*',
             'mit wbs',
+            'wbs mit',
             '+ wbs',
             'wbs-wohn',
             'wbs-berechtigte',
@@ -64,7 +70,8 @@ filter = {
             'studenten-appartement',
             'anfragestop',
             'suche stellplatz',
-            'münchen'
+            'münchen',
+            'eberswalde'
         ],
         'kiez': [
             'steglitz',
@@ -119,15 +126,18 @@ filter = {
             'untermiete',
             'zwischenmiete',
             'auf zeit',
+            ' tage ',
             'monatsweise',
             'nur tausch',
             'ich tausche',
             'zum tausch',
+            'tauschen',
             'wohnungstausch',
             'ich suche eine ',
             'belohnung',
             'lundberg',
-            'monteur'
+            'monteur',
+            'Büroplatz'
         ]
     }
 }
