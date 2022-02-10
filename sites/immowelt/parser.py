@@ -4,8 +4,7 @@ import re
 import datetime
 
 from urllib.parse import urljoin, quote
-import urllib
-from lxml import html, etree
+from lxml import html
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +43,6 @@ price_type_map = {
 
 def parse(html_input):
 
-    base_url = "https://www.ebay-kleinanzeigen.de/"
     object_url = 'https://www.immowelt.de/expose/'
 
     if isinstance(html, bytes):
