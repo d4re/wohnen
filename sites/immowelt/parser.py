@@ -31,7 +31,9 @@ feature_map = {
     'BARRIER_FREE': 'Barrierefrei',
     'GROUND_FLOOR': 'Erdgeschoss',
     'PETS_ALLOWED': 'Haustiere erlaubt',
-    'FLAT_SHARE_POSSIBLE': 'WG tauglich'
+    'FLAT_SHARE_POSSIBLE': 'WG tauglich',
+    'WHEELCHAIR_ACCESSIBLE': 'Rollstuhlgerecht',
+    'FULLY_FURNISHED': 'Möbliert'
 }
 
 price_type_map = {
