@@ -43,8 +43,10 @@ filter = {
             'zimmer gegen',
             'swap',
             'sublet',
+            'subrent',
             'auf zeit',
             'kurzzeit',
+            ' befristet',
             'für monat ',
             ' tage ',
             ' week',
@@ -53,6 +55,7 @@ filter = {
             ' monate',
             ' wg ',
             ' wg-',
+            '-wg',
             'wg zimmer',
             'wg-zimmer',
             'er wg',
@@ -60,6 +63,7 @@ filter = {
             'wohngemeinschaft',
             'mitbewohner',
             'shared apartment',
+            'shared room',
             '*wbs*',
             'mit wbs',
             'wbs mit',
@@ -67,6 +71,7 @@ filter = {
             '!wbs',
             'wbs-wohn',
             'wbs-berechtigte',
+            'wbs-pflichtig',
             'bedingung wbs',
             'wbs wohnung',
             'ferienwohnung',
@@ -74,6 +79,7 @@ filter = {
             'familie',
             'monteur',
             'montage ',
+            'montagewohnung',
             'studentenwohnheim',
             'studenten-appartement',
             'anfragestop',
@@ -83,7 +89,7 @@ filter = {
             'prämie',
             'ohne anmeldung',
             ' möblierte ',
-            'voll möbliert'
+            'voll möbliert',
         ],
         'kiez': [
             'steglitz',
@@ -126,7 +132,8 @@ filter = {
             'lübars',
             'haselhorst',
             'siemensstadt',
-            'waidmannslust'
+            'waidmannslust',
+            'altglienicke'
         ],
         'Beschreibung': [ # ebay kleinanzeigen field
             'das zweite foto',
@@ -159,7 +166,8 @@ filter = {
             'büroplatz',
             'vermietende',
             'ohne anmeldung',
-            'keine anmeldung'
+            'keine anmeldung',
+            'wg zimmer'
         ]
     }
 }
