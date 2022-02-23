@@ -58,7 +58,11 @@ if __name__ == "__main__":
 
             scraper = spec_scraper.loader.load_module()
 
-            html = scraper.scrape(config.query_parameters)
+            try:
+                html = scraper.scrape(config.query_parameters)
+            except Exception as error:
+                logger.exception(error)
+                continue
         else:
             html = get_sample(site)
 
