@@ -17,6 +17,7 @@ feature_map = {
     'BALCONY': 'Balkon',
     'LOGGIA': 'Loggia',
     'TERRACE': 'Terasse',
+    'GARAGE': 'Garage',
     'GARDEN': 'Garten',
     'GARDEN_SHARED': 'Garten zum Mitbenutzen',
     'UNDERGROUND_PARKING': 'Tiefgarage',
