@@ -1,7 +1,7 @@
 import argparse
 import logging
 import sys
-import importlib
+import importlib.util
 
 import config
 
