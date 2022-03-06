@@ -34,6 +34,7 @@ feature_map = {
     'PETS_ALLOWED': 'Haustiere erlaubt',
     'FLAT_SHARE_POSSIBLE': 'WG tauglich',
     'WHEELCHAIR_ACCESSIBLE': 'Rollstuhlgerecht',
+    'PARTLY_FURNISHED': 'Teilmöbliert',
     'FULLY_FURNISHED': 'Möbliert'
 }
 
