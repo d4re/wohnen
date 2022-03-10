@@ -7,7 +7,11 @@ The program is built with a sort-of modular design so it can be extended to work
 Currently implemented are scraper and parser for
   * inberlinwohnen.de, where the city of Berlin advertises it's flats
   * deutsche-wohnen.com
-  * ebay-kleinanzeigen.de (it's a mess)
+  * ebay-kleinanzeigen.de (it's a mess what people post)
+  * howoge.de (SAP + Easysquare/PROMOS madness)
+  * wbm.de
+  * immowelt.de
+  * wg-gesucht.de
 
 ## Usage
 
@@ -15,16 +19,17 @@ The config uses a mix of command line arguments and the file `config.py`.
 
 ```shell
 » ./wohnen.py --help
-usage: wohnen.py [-h] [--scrape] [--email EMAIL] sites [sites ...]
+usage: wohnen.py [-h] [--scrape] [--quiet] [--email EMAIL] [--formattest] sites [sites ...]
 
 positional arguments:
-  sites                 list of sites to check
+  sites          list of sites to check
 
 optional arguments:
-  -h, --help            show this help message and exit
-  --scrape              actually scrape
-  --email EMAIL         email addresses to send notify about new flats (single email address per option)
-
+  -h, --help     show this help message and exit
+  --scrape       actually scrape
+  --quiet        hide log output
+  --email EMAIL  email addresses to send notify about new flats
+  --formattest   test email formatting
 ```
 
 Set the search parameters in config.py:
@@ -40,6 +45,10 @@ query_parameters = {
     'wbs': 0
 }
 ```
+
+## TODO
+  * not all filter settings are propagated in all site modules (at least rent works everywhere)
+  * document parsertest.py
 
 ## Authors
 - Benedikt Kristinsson <benedikt@inventati.org>
