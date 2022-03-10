@@ -1,6 +1,7 @@
 from logging import DEBUG, INFO, WARNING, ERROR
+from pathlib import Path
 
-data_path = "/home/pegro/wohnen/data/main"
+data_path = f"{Path.home()}/wohnen/data/main"
 
 loglevel = DEBUG
 logfile = f"{data_path}/scrape.log"
