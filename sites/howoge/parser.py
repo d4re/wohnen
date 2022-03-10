@@ -24,7 +24,8 @@ def parse(xml_input):
     for flat in all_flats:
         flat_dict = {}
 
-        flat_dict['title'] = flat.xpath("./x:title", namespaces=xmlforms_ns)[0].text.strip()
+        title_tree = flat.xpath("./x:title", namespaces=xmlforms_ns)[0].text
+        flat_dict['title'] = title_tree.strip() if title_tree else '(kein Titel)'
 
         pos = flat.xpath("./x:address", namespaces=xmlforms_ns)[0]
         flat_dict['pos'] = {
