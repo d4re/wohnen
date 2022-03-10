@@ -42,6 +42,7 @@ filter = {
             'tausch',
             'tauch wohnung',
             'tauchwohnung',
+            'tauchen',
             'zimmer gegen',
             'swap',
             'sublet',
