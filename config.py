@@ -2,7 +2,7 @@ from logging import DEBUG, INFO, WARNING, ERROR
 from pathlib import Path
 import yaml
 
-data_path = f"{Path.home()}/git/wohnen/data"
+data_path = f"{Path.home()}/wohnen/data"
 
 loglevel = DEBUG
 logfile = f"{data_path}/scrape.log"
@@ -37,6 +37,7 @@ filter = {
     },
     'block' : {
         'title' : [
+            'flatmate',
             'untermiete',
             'zwischenmiete',
             'zwischemiete',
@@ -92,7 +93,6 @@ filter = {
             'wbs wohnung',
             'ferienwohnung',
             'ferien wohnung',
-            'familie',
             'monteur',
             'montage ',
             'montagewohnung',
@@ -112,7 +112,8 @@ filter = {
             'ohne anmeldung',
             ' möblierte ',
             'voll möbliert',
-            'einkommen zwischen'
+            'einkommen zwischen',
+            'einkommensorientiert'
         ],
         'kiez': [
             'steglitz',
