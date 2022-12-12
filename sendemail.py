@@ -48,7 +48,7 @@ Besonderheiten:{% for feature in flat.features %}
 tpl_html_email = u"""
 <h3>Duuuu, ich rieche neue neue Inserate! *schwanzwedel*</h3>
 
-<p><img src="{{dogpic}}" /></p>
+<p><img src="{{dogpic}}" width="600" /></p>
 
 {% for site, flats in sites.items() %}
 <h4>Bei {{site|capitalize}} gibt's <strong>{{flats|length}}</strong> neue Angebote</h4>
