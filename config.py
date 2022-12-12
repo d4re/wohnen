@@ -1,24 +1,34 @@
 from logging import DEBUG, INFO, WARNING, ERROR
 from pathlib import Path
+import yaml
 
-data_path = f"{Path.home()}/wohnen/data/main"
+data_path = f"{Path.home()}/git/wohnen/data"
 
 loglevel = DEBUG
 logfile = f"{data_path}/scrape.log"
 
-name_from = "Wohnungsschnüffler"
-email_from = "wo-schnueffi@example.com"
+with open("local/account.yaml", "r") as file:
+    email_account = yaml.safe_load(file)
 
-smtp_server = "localhost"
+name_from = "Wohnungsschnüffler"
+email_from = email_account["user"]
+
+
+smtp_server = dict(
+    host="smtp.gmail.com",
+    port=465,
+    username=email_account["user"],
+    password=email_account["password"]
+)
 
 ## Set searches
 ## This only has an effect when run with --scrape
 query_parameters = {
-    'area_min': 42,
-    'rooms_min': 2,
-    'rooms_max': 5,
-    'rent_base_max': 600,
-    'rent_total_max': 770,
+    'area_min': 50,
+    'rooms_min': 1,
+    'rooms_max': 4,
+    'rent_base_max': 1600,
+    'rent_total_max': 1600,
     'wbs': 0
 }
 
@@ -102,12 +112,12 @@ filter = {
             'ohne anmeldung',
             ' möblierte ',
             'voll möbliert',
+            'einkommen zwischen'
         ],
         'kiez': [
             'steglitz',
             'zehlendorf',
             'wannsee',
-            'mariendorf',
             'marienfelde',
             'buckow',
             'wilhelmsruh',
@@ -124,13 +134,9 @@ filter = {
             'adlershof',
             'köpenick',
             'grünau',
-            'biesdorf',
             'mahlsdorf',
-            'friedrichsfelde',
             'kaulsdorf',
             'hellersdorf',
-            'marzahn',
-            'hohenschönhausen',
             'heinersdorf',
             'buch',
             'märkisches viertel',

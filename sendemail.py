@@ -121,7 +121,8 @@ def send_email(sites, emails):
 
     try:
         logger.info("Sending email to: {}".format(", ".join(emails)))
-        s = smtplib.SMTP(config.smtp_server)
+        s = smtplib.SMTP_SSL(config.smtp_server["host"], config.smtp_server["port"])
+        s.login(config.smtp_server["username"], config.smtp_server["password"])
         s.sendmail(msg["From"].__str__(), emails, msg.as_string())
         s.quit()
     except Exception as e:
