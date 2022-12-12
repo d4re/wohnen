@@ -1,5 +1,6 @@
 from logging import DEBUG, INFO, WARNING, ERROR
 from pathlib import Path
+import os
 import yaml
 
 data_path = f"{Path.home()}/wohnen/data"
@@ -7,7 +8,7 @@ data_path = f"{Path.home()}/wohnen/data"
 loglevel = DEBUG
 logfile = f"{data_path}/scrape.log"
 
-with open("local/account.yaml", "r") as file:
+with open(os.path.dirname(__file__) + "/local/account.yaml", "r") as file:
     email_account = yaml.safe_load(file)
 
 name_from = "Wohnungsschnüffler"
