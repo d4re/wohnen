@@ -1,0 +1,8 @@
+# this is the template for your account data. Please fill out the relevant fields and rename to accounts.yaml
+email:
+  name_from: "Wohnungsschnüffler"
+  email_from: <add from mail here>
+  host: <add host here>
+  port: <add port here>
+  username: <add username here>
+  password: <add password here>

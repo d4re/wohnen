@@ -2,25 +2,37 @@ from logging import DEBUG, INFO, WARNING, ERROR
 from pathlib import Path
 import os
 import yaml
+from pydantic import BaseModel
+
+class EmailAccount(BaseModel):
+    name_from: str
+    email_from: str
+    host: str
+    port: int
+    username: str
+    password: str
+
+class TelegramAccount(BaseModel):
+    name: str
+    api_key: str
+
+accounts_file = os.path.dirname(__file__) + "/local/accounts.yaml"
+
+def get_mail_account() -> EmailAccount:
+    with open(accounts_file, "r") as file:
+        accounts = yaml.safe_load(file)
+    return EmailAccount.parse_obj(accounts["email"])
+
+def get_telegram_account() -> TelegramAccount:
+    with open(accounts_file, "r") as file:
+        accounts = yaml.safe_load(file)
+    return TelegramAccount.parse_obj(accounts["telegram_bot"])
+
 
 data_path = f"{Path.home()}/wohnen/data"
 
 loglevel = DEBUG
 logfile = f"{data_path}/scrape.log"
-
-with open(os.path.dirname(__file__) + "/local/account.yaml", "r") as file:
-    email_account = yaml.safe_load(file)
-
-name_from = "Wohnungsschnüffler"
-email_from = email_account["user"]
-
-
-smtp_server = dict(
-    host="smtp.gmail.com",
-    port=465,
-    username=email_account["user"],
-    password=email_account["password"]
-)
 
 ## Set searches
 ## This only has an effect when run with --scrape

@@ -5,16 +5,20 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
 import logging
-
 import config
+import yaml
 import dogpics
 
 from jinja2 import Environment, select_autoescape
+
+
 env = Environment(
     autoescape=select_autoescape()
 )
 
 logger = logging.getLogger(__name__)
+
+email_account: config.EmailAccount = None
 
 tpl_text_email = u"""Hundi: {{dogpic}}
 
@@ -92,7 +96,7 @@ def create_email_body(sites, dogpic, tpl):
 
     return template.render(sites=sites, dogpic=dogpic)
 
-def create_email(sites, emails):
+def create_email(sites, emails, account: config.EmailAccount):
     dogpic = get_dogpic()
 
     msg = MIMEMultipart('alternative')
@@ -102,8 +106,8 @@ def create_email(sites, emails):
     msg.attach(plain)
     msg.attach(html)
 
-    email_from = Header(config.name_from, 'utf-8')
-    email_from.append(f'<{config.email_from}>', 'ascii')
+    email_from = Header(account.name_from, 'utf-8')
+    email_from.append(f'<{account.email_from}>', 'ascii')
 
     new_flats = sum([len(flats) for flats in sites.values()])
     if new_flats == 1:
@@ -117,12 +121,16 @@ def create_email(sites, emails):
     return msg
 
 def send_email(sites, emails):
-    msg = create_email(sites, emails)
+    global email_account
+    if email_account is None:
+        email_account = config.get_mail_account()
+
+    msg = create_email(sites, emails, email_account)
 
     try:
         logger.info("Sending email to: {}".format(", ".join(emails)))
-        s = smtplib.SMTP_SSL(config.smtp_server["host"], config.smtp_server["port"])
-        s.login(config.smtp_server["username"], config.smtp_server["password"])
+        s = smtplib.SMTP_SSL(email_account.host, email_account.port)
+        s.login(email_account.username, email_account.password)
         s.sendmail(msg["From"].__str__(), emails, msg.as_string())
         s.quit()
     except Exception as e:
