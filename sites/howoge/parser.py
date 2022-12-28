@@ -48,13 +48,20 @@ def parse(xml_input):
         ).hexdigest()
 
         flat_dict["properties"] = {}
+        property_mapping = {
+            "Rooms": "rooms",
+            "Living space": "area",
+            "Total rent": "rent_total",
+        }
         properties = flat.xpath("./x:details/x:row", namespaces=xmlforms_ns)
         for property in properties:
-            if property.attrib["title"] == "District":
+            title = property.attrib["title"]
+            if title == "District":
                 flat_dict["kiez"] = property.text.strip()
                 continue
+            title = property_mapping.get(title, title)
 
-            flat_dict["properties"][property.attrib["title"]] = property.text.strip()
+            flat_dict["properties"][title] = property.text.strip()
 
         flat_dict["link"] = base_url
 

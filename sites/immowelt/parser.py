@@ -39,7 +39,7 @@ feature_map = {
 }
 
 price_type_map = {
-    "RENT_INCLUDING_HEATING": "Warmmiete",
+    "RENT_INCLUDING_HEATING": "rent_total",
     "COLD_RENT": "Kaltmiete",
     "NET_COLD_RENT": "Nettokaltmiete",
     "SQUARE_METER_PRICE": "Euro/m²",
@@ -97,8 +97,8 @@ def parse(html_input):
         ).strftime("%d.%m.%Y %H:%M")
 
         flat_dict["properties"] = {
-            "Räume": flat["roomsMin"],
-            "Fläche": f"{flat['primaryArea']['sizeMin']} m²",
+            "rooms": flat["roomsMin"],
+            "area": f"{flat['primaryArea']['sizeMin']} m²",
         }
         if "contructionYear" in flat:
             flat_dict["properties"]["Baujahr"] = flat["constructionYear"]

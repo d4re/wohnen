@@ -88,6 +88,12 @@ def parse(html_input):
     """
     base_url = "https://inberlinwohnen.de/"
 
+    property_map = {
+        "Wohnfläche": "area",
+        "Zimmer": "rooms",
+        "Gesamtmiete": "rent_total",
+    }
+
     results = json.loads(html_input)
 
     # get location markers first
@@ -142,7 +148,7 @@ def parse(html_input):
         props = {}
         for prop in all_props:
             prop_key = prop.xpath(".//dd")[0].text_content().replace(":", "").strip()
-
+            prop_key = property_map.get(prop_key, prop_key)
             prop_val_el = prop.xpath(".//dt")[0]
             prop_val = "".join(
                 [prop_val_el.text]

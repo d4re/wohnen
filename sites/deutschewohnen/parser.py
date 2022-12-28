@@ -98,10 +98,10 @@ def parse(html_input):
         flat_dict["properties"] = {}
         possible_fields = {
             "detailType": "Wohnungstyp",
-            "price": "Gesamtmiete",
+            "price": "rent_total",
             "heatingCosts": "Heizkosten",
-            "area": "Fläche",
-            "rooms": "Zimmer",
+            "area": "area",
+            "rooms": "rooms",
             "level": "Etage",
             "isTopLevel": "Oberstes Stockwerk",
         }

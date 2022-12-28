@@ -61,6 +61,12 @@ logger = logging.getLogger(__name__)
 def parse(html_input):
     base_url = "https://www.wbm.de"
 
+    property_map = {
+        "Größe": "area",
+        "Zimmer": "rooms",
+        "Gesamtmiete": "rent_total",
+    }
+
     # parse results
     tree = html.fromstring(html_input)
     all_flats = tree.xpath("//div[contains(@class,'openimmo-search-list-item')]")
@@ -96,6 +102,7 @@ def parse(html_input):
         for prop in props:
             kv = prop.xpath("./div")
             key = kv[0].text_content().replace(":", "")
+            key = property_map.get(key, key)
             value = kv[1].text_content()
             flat_dict["properties"][key] = value
 
