@@ -5,11 +5,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class JsonFile(object):
     def __init__(self, _json, _existing_ids, _cmp_key, _filename):
-        self._json = _json                  # list
+        self._json = _json  # list
         self._existing_ids = _existing_ids  # set
-        self._cmp_key = _cmp_key            # string
+        self._cmp_key = _cmp_key  # string
         self._filename = _filename
         self._new = []
 
@@ -60,10 +61,14 @@ class JsonFile(object):
         """Simply overwrites the file with self._json"""
         if self.new_item_count > 0:
             try:
-                with open(self._filename, 'w') as f:
-                    f.write(json.dumps(self._json, indent=4, separators=(',', ': ')))
+                with open(self._filename, "w") as f:
+                    f.write(json.dumps(self._json, indent=4, separators=(",", ": ")))
                     # empty the _new list
-                    logger.info("Wrote {} new items to {}".format(self.new_item_count, self._filename))
+                    logger.info(
+                        "Wrote {} new items to {}".format(
+                            self.new_item_count, self._filename
+                        )
+                    )
                     self._new[:] = []
             except IOError as e:
                 logger.error(e)

@@ -1,15 +1,15 @@
+import datetime
 import json
 import logging
 import re
-import datetime
-
-from urllib.parse import urljoin, quote
 import urllib
+from urllib.parse import quote, urljoin
+
 from lxml import html
 
 logger = logging.getLogger(__name__)
 
-'''
+"""
 <div class="row openimmo-search-list-item" data-id="51-3109/3/184">
     <div class="col-8 immo-col stretch">
         <article class="teaserBox variation-pt immo-element">
@@ -55,10 +55,11 @@ logger = logging.getLogger(__name__)
         </article>
     </div>
 </div>
-'''
+"""
+
 
 def parse(html_input):
-    base_url = 'https://www.wbm.de'
+    base_url = "https://www.wbm.de"
 
     # parse results
     tree = html.fromstring(html_input)
@@ -69,35 +70,41 @@ def parse(html_input):
     for flat in all_flats:
         flat_dict = {}
 
-        flat_dict['title'] = flat.xpath(".//h2[contains(@class,'imageTitle')]")[0].text_content().strip()
-        flat_dict['id'] = flat.xpath("./@data-id")[0]
-        flat_dict['link'] = flat.xpath(".//a[contains(@class,'btn')]/@href")[0]
-        flat_dict['link'] = quote(urljoin(base_url, flat_dict['link']), safe=":/")
+        flat_dict["title"] = (
+            flat.xpath(".//h2[contains(@class,'imageTitle')]")[0].text_content().strip()
+        )
+        flat_dict["id"] = flat.xpath("./@data-id")[0]
+        flat_dict["link"] = flat.xpath(".//a[contains(@class,'btn')]/@href")[0]
+        flat_dict["link"] = quote(urljoin(base_url, flat_dict["link"]), safe=":/")
 
-        flat_dict['addr'] = flat.xpath(".//p[contains(@class,'address')]")[0].text_content().strip()
-        flat_dict['addr'] = re.sub('\n\s+',' ', flat_dict['addr'])
-        flat_dict['addr'] = flat_dict['addr'].replace(',',', ')
+        flat_dict["addr"] = (
+            flat.xpath(".//p[contains(@class,'address')]")[0].text_content().strip()
+        )
+        flat_dict["addr"] = re.sub("\n\s+", " ", flat_dict["addr"])
+        flat_dict["addr"] = flat_dict["addr"].replace(",", ", ")
 
-        flat_dict['kiez'] = flat.xpath(".//p[contains(@class,'category')]")[0].text_content().strip()
+        flat_dict["kiez"] = (
+            flat.xpath(".//p[contains(@class,'category')]")[0].text_content().strip()
+        )
 
-        flat_dict['date_found'] = datetime.datetime.now().strftime('%d.%m.%Y %H:%M')
+        flat_dict["date_found"] = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
 
         # Eigenschaften
-        flat_dict['properties'] = {}
+        flat_dict["properties"] = {}
 
         props = flat.xpath(".//ul[contains(@class,'main-property-list')][1]/li")
         for prop in props:
-            kv = prop.xpath('./div')
-            key = kv[0].text_content().replace(':','')
+            kv = prop.xpath("./div")
+            key = kv[0].text_content().replace(":", "")
             value = kv[1].text_content()
-            flat_dict['properties'][key] = value
+            flat_dict["properties"][key] = value
 
         # Besonderheiten
-        flat_dict['features'] = []
+        flat_dict["features"] = []
         all_features = flat.xpath(".//ul[contains(@class,'check-property-list')][1]/li")
         for feature in all_features:
-          flat_dict['features'].append(feature.text_content())
+            flat_dict["features"].append(feature.text_content())
 
-        flat_dict['landlord'] = 'WBM'
+        flat_dict["landlord"] = "WBM"
 
         yield flat_dict

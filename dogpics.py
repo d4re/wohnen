@@ -1,9 +1,9 @@
-#coding: utf-8
+# coding: utf-8
 
+import logging
 import random
 import time
 from urllib.parse import urljoin
-import logging
 
 import requests
 
@@ -11,17 +11,18 @@ REDDIT = "https://www.reddit.com"
 DEFAULTDOG = "https://i.redd.it/bqkh6gdv5so01.jpg"
 logger = logging.getLogger(__name__)
 
-dogreddits = [
-    "PuppySmiles",
-    "dogpictures"
-]
+dogreddits = ["PuppySmiles", "dogpictures"]
+
 
 def urls(result):
-    return [a['data']['url'] for a in result['data']['children']]
+    return [a["data"]["url"] for a in result["data"]["children"]]
+
 
 def get_dogpics():
     session = requests.Session()
-    session.headers.update({'User-Agent': 'This is /u/benediktkr fetching two dog pictures'})
+    session.headers.update(
+        {"User-Agent": "This is /u/benediktkr fetching two dog pictures"}
+    )
 
     dogs = []
     for subreddit in dogreddits:
@@ -34,6 +35,7 @@ def get_dogpics():
 
     logging.info("Found {} dogs".format(len(dogs)))
     return dogs
+
 
 def get_random_dogpic():
     try:
@@ -50,6 +52,7 @@ def get_random_dogpic():
         logging.error(e)
         logging.info("Picking default dog")
         return DEFAULTDOG
+
 
 if __name__ == "__main__":
     print("Default:", DEFAULTDOG)

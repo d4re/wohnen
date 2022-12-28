@@ -1,13 +1,13 @@
+import datetime
 import logging
 import re
-import datetime
+from urllib.parse import quote, urljoin
 
-from urllib.parse import urljoin, quote
 from lxml import html
 
 logger = logging.getLogger(__name__)
 
-'''
+"""
 <div id="liste-details-ad-8457387" class="col-sm-6 offer_list_item" data-id="8457387">
     <div class="panel panel-default ">
         <div class="panel-heading" style="padding:0;">
@@ -48,12 +48,13 @@ logger = logging.getLogger(__name__)
         </div>
     </div>
 </div>
-'''
+"""
+
 
 def parse(html_input):
 
     if isinstance(html, bytes):
-        html_input = html_input.decode('utf-8')
+        html_input = html_input.decode("utf-8")
 
     base_url = "https://www.wg-gesucht.de/"
 
@@ -67,38 +68,38 @@ def parse(html_input):
         flat_dict = {}
 
         headline = flat.xpath(".//h3[contains(@class,'headline-list-view')]/a")[0]
-        flat_dict['title'] = headline.text_content().strip()
-        flat_dict['id'] = flat.attrib['data-id']
-        flat_dict['link'] = headline.attrib['href']
-        flat_dict['link'] = quote(urljoin(base_url, flat_dict['link']), safe=":/")
+        flat_dict["title"] = headline.text_content().strip()
+        flat_dict["id"] = flat.attrib["data-id"]
+        flat_dict["link"] = headline.attrib["href"]
+        flat_dict["link"] = quote(urljoin(base_url, flat_dict["link"]), safe=":/")
 
         # Bild
         image = flat.xpath(".//img[contains(@class,'img-responsive')]/@data-src")
         if image:
-          flat_dict['image'] = quote(image[0], safe=':/')
+            flat_dict["image"] = quote(image[0], safe=":/")
 
         # panel-body
         panel = flat.xpath(".//div[contains(@class,'panel-body')]/text()")
-        area_price = (''.join(panel)).strip().split('-')
-        flat_dict['properties'] = {
-            'Fläche': area_price[0].strip(),
-            'Warmmiete': area_price[1].strip()
+        area_price = ("".join(panel)).strip().split("-")
+        flat_dict["properties"] = {
+            "Fläche": area_price[0].strip(),
+            "Warmmiete": area_price[1].strip(),
         }
-        
+
         # empty defaults
-        flat_dict['addr'] = ''
-        flat_dict['kiez'] = ''
+        flat_dict["addr"] = ""
+        flat_dict["kiez"] = ""
 
-        kiez_s = re.search('wohnungen-in-Berlin-(.*)\.\d+.html', flat_dict['link'])
+        kiez_s = re.search("wohnungen-in-Berlin-(.*)\.\d+.html", flat_dict["link"])
         if kiez_s:
-          flat_dict['kiez'] = kiez_s.group(1)
+            flat_dict["kiez"] = kiez_s.group(1)
         # umlauts
-        flat_dict['kiez'] = flat_dict['kiez'].replace('oe', 'ö')
+        flat_dict["kiez"] = flat_dict["kiez"].replace("oe", "ö")
 
-        flat_dict['date_found'] = datetime.datetime.now().strftime('%d.%m.%Y %H:%M')
+        flat_dict["date_found"] = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
 
         # Besonderheiten
-        flat_dict['features'] = []
-        flat_dict['landlord'] = ''
+        flat_dict["features"] = []
+        flat_dict["landlord"] = ""
 
         yield flat_dict

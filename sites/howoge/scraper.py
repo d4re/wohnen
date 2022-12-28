@@ -1,11 +1,12 @@
 import base64
-from datetime import datetime
-from lxml import etree
-import requests
-from urllib.parse import urlencode
 import uuid
+from datetime import datetime
+from urllib.parse import urlencode
 
-'''
+import requests
+from lxml import etree
+
+"""
 Step 1:
 
 POST https://portal1s.easysquare.com/meinehowoge/api5/authenticate?api=6.139&sap-language=de
@@ -776,62 +777,60 @@ Wir gestalten Berliner Kieze sozial, zukunftsorientiert und nachhaltig. Die HOWO
 </form>
 
 
-'''
+"""
 
-#website_url = 'https://portal1s.easysquare.com/meinehowoge/index.html' # only needed, if we need to refetch brandconfig_url
+# website_url = 'https://portal1s.easysquare.com/meinehowoge/index.html' # only needed, if we need to refetch brandconfig_url
 
-#brandconfig_url = 'https://portal1s.easysquare.com/meinehowoge/~20211124135010~/brands/howoge/brandconfig.json'
+# brandconfig_url = 'https://portal1s.easysquare.com/meinehowoge/~20211124135010~/brands/howoge/brandconfig.json'
 brandconfig = {
-	"config": {
-		"appName": "Meine HOWOGE",
-		"customerIconfontPath": "icons/Howoge-Icons.json",
-		"customerIconfontName": "Howoge"
-	},
-	"features": {
-		"demoAccountUser": "WOA74263",
-		"demoAccountPassword": "Ajd3z4Qd4"
-	}
+    "config": {
+        "appName": "Meine HOWOGE",
+        "customerIconfontPath": "icons/Howoge-Icons.json",
+        "customerIconfontName": "Howoge",
+    },
+    "features": {"demoAccountUser": "WOA74263", "demoAccountPassword": "Ajd3z4Qd4"},
 }
 # used as "sap-ffield_b64" in payload in API requests
-auth_str_username_only = base64.b64encode(f"user={brandconfig['features']['demoAccountUser']}".encode('utf-8')).decode('utf-8')
-auth_str = base64.b64encode(f"user={brandconfig['features']['demoAccountUser']}&password={brandconfig['features']['demoAccountPassword']}".encode('utf-8')).decode('utf-8')
+auth_str_username_only = base64.b64encode(
+    f"user={brandconfig['features']['demoAccountUser']}".encode("utf-8")
+).decode("utf-8")
+auth_str = base64.b64encode(
+    f"user={brandconfig['features']['demoAccountUser']}&password={brandconfig['features']['demoAccountPassword']}".encode(
+        "utf-8"
+    )
+).decode("utf-8")
 
-api_url = 'https://portal1s.easysquare.com/meinehowoge/api5'
-xmlforms_url = 'https://portal1s.easysquare.com/prorex/xmlforms'
+api_url = "https://portal1s.easysquare.com/meinehowoge/api5"
+xmlforms_url = "https://portal1s.easysquare.com/prorex/xmlforms"
 xmlforms_ns = {
-  'x': 'http://www.openpromos.com/OPPC/XMLForms',
-  'meta': 'http://www.openpromos.com/OPPC/XMLFormsMetaData'
+    "x": "http://www.openpromos.com/OPPC/XMLForms",
+    "meta": "http://www.openpromos.com/OPPC/XMLFormsMetaData",
 }
 
-default_params = {
-  'api': '6.139',
-  'sap-language': 'de'
-}
+default_params = {"api": "6.139", "sap-language": "de"}
 
 s = requests.Session()
 
 search_headers = {
-    'accept': '*/*',
-    'origin': 'https://portal1s.easysquare.com',
-    'x-requested-with': 'XMLHttpRequest',
-    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    "accept": "*/*",
+    "origin": "https://portal1s.easysquare.com",
+    "x-requested-with": "XMLHttpRequest",
+    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
 }
 
 common_headers = {
-    'accept-encoding': 'gzip, deflate, br',
-    'accept-language': 'en-US,en;q=0.9',
-    'pragma': 'no-cache',
-    'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36',
-    'cache-control': 'no-cache',
-    'authority': 'portal1s.easysquare.com',
-    'referer': 'https://portal1s.easysquare.com/meinehowoge/'
+    "accept-encoding": "gzip, deflate, br",
+    "accept-language": "en-US,en;q=0.9",
+    "pragma": "no-cache",
+    "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36",
+    "cache-control": "no-cache",
+    "authority": "portal1s.easysquare.com",
+    "referer": "https://portal1s.easysquare.com/meinehowoge/",
 }
 s.headers.update(common_headers)
 
-s.cookies.update({
-  'esq-alias': '/meinehowoge',
-  'sap-usercontext': 'sap-client=451'
-})
+s.cookies.update({"esq-alias": "/meinehowoge", "sap-usercontext": "sap-client=451"})
+
 
 def scrape(params):
 
@@ -839,127 +838,158 @@ def scrape(params):
     api_params.update(default_params)
 
     # authenticate
-    auth = s.post(f'{api_url}/authenticate?{urlencode(api_params)}', data=urlencode({'sap-ffield_b64':auth_str}), headers=search_headers)
+    auth = s.post(
+        f"{api_url}/authenticate?{urlencode(api_params)}",
+        data=urlencode({"sap-ffield_b64": auth_str}),
+        headers=search_headers,
+    )
     auth.raise_for_status()
-    
+
     # submit boxlist request
     # GET https://portal1s.easysquare.com/prorex/xmlforms?application=ESQ_IA_REOBJ&sap-client=451&command=action&name=boxlist&api=6.139&head-oppc-version=6.139.10&_=1645903079761
 
     boxlist_params = {
-      'application': 'ESQ_IA_REOBJ',
-      'sap-client': 451,
-      'command': 'action',
-      'name': 'boxlist',
-      'api': '6.139',
-      'head-oppc-version': '6.139.10',
-      '_': int(datetime.timestamp(datetime.now()))
+        "application": "ESQ_IA_REOBJ",
+        "sap-client": 451,
+        "command": "action",
+        "name": "boxlist",
+        "api": "6.139",
+        "head-oppc-version": "6.139.10",
+        "_": int(datetime.timestamp(datetime.now())),
     }
-    boxlist = s.get(f'{xmlforms_url}?{urlencode(boxlist_params)}', headers=search_headers)
+    boxlist = s.get(
+        f"{xmlforms_url}?{urlencode(boxlist_params)}", headers=search_headers
+    )
 
-    boxlist_tree = etree.XML(boxlist.text.encode('utf-8'))
+    boxlist_tree = etree.XML(boxlist.text.encode("utf-8"))
     # get search box ID
-    box_search = boxlist_tree.xpath("//x:box[contains(@boxid,'ESQ_VM_REOBJ_ALL')]/@filterFormId", namespaces=xmlforms_ns)
+    box_search = boxlist_tree.xpath(
+        "//x:box[contains(@boxid,'ESQ_VM_REOBJ_ALL')]/@filterFormId",
+        namespaces=xmlforms_ns,
+    )
     if len(box_search) == 0:
-      raise Exception('No flat search box found')
-    
+        raise Exception("No flat search box found")
+
     filter_form_id = box_search[0]
 
     # get form
-    #GET https://portal1s.easysquare.com/prorex/xmlforms?application=ESQ_IA_REOBJ&sap-client=451&command=action&name=get&id=400C82FA-7F52-8ACA-8F8F-6349A4A95BB1&api=6.139&head-oppc-version=6.139.10
+    # GET https://portal1s.easysquare.com/prorex/xmlforms?application=ESQ_IA_REOBJ&sap-client=451&command=action&name=get&id=400C82FA-7F52-8ACA-8F8F-6349A4A95BB1&api=6.139&head-oppc-version=6.139.10
 
     forms_params = {
-      'application': 'ESQ_IA_REOBJ',
-      'sap-client': 451,
-      'command': 'action',
-      'name': 'get',
-      'id': filter_form_id,
-      'head-oppc-version': '6.139.10'
+        "application": "ESQ_IA_REOBJ",
+        "sap-client": 451,
+        "command": "action",
+        "name": "get",
+        "id": filter_form_id,
+        "head-oppc-version": "6.139.10",
     }
 
-    html_result = s.get(f'{xmlforms_url}?{urlencode(forms_params)}', headers=search_headers)
+    html_result = s.get(
+        f"{xmlforms_url}?{urlencode(forms_params)}", headers=search_headers
+    )
 
-    form_tree = etree.XML(html_result.text.encode('utf-8'))
+    form_tree = etree.XML(html_result.text.encode("utf-8"))
 
     # generate new uuid
     new_uuid = str(uuid.uuid4()).upper()
 
     # set id in <form>
-    form_tree.attrib['id'] = new_uuid
+    form_tree.attrib["id"] = new_uuid
     # set id in <head>
-    head_tree = form_tree.xpath('//x:head', namespaces=xmlforms_ns)[0]
-    head_id = head_tree.xpath('//x:id', namespaces=xmlforms_ns)
+    head_tree = form_tree.xpath("//x:head", namespaces=xmlforms_ns)[0]
+    head_id = head_tree.xpath("//x:id", namespaces=xmlforms_ns)
     if len(head_id) > 0:
-      head_id[0].text = new_uuid
+        head_id[0].text = new_uuid
     else:
-      head_id = etree.SubElement(head_tree, 'id')
-      head_id.text = new_uuid
+        head_id = etree.SubElement(head_tree, "id")
+        head_id.text = new_uuid
 
     # add <history>
-    history = etree.SubElement(form_tree, 'history')
-    save = etree.SubElement(history,'save')
-    save.attrib['oldId'] = filter_form_id
-    save.attrib['newId'] = new_uuid
-    save.attrib['userName'] = brandconfig['features']['demoAccountUser']
-    save.attrib['timestamp'] = datetime.isoformat(datetime.now(), timespec='seconds')
+    history = etree.SubElement(form_tree, "history")
+    save = etree.SubElement(history, "save")
+    save.attrib["oldId"] = filter_form_id
+    save.attrib["newId"] = new_uuid
+    save.attrib["userName"] = brandconfig["features"]["demoAccountUser"]
+    save.attrib["timestamp"] = datetime.isoformat(datetime.now(), timespec="seconds")
 
     # apply filter settings
-    wbs_field = form_tree.xpath("//x:choicefield[contains(@id,'SO_#HAS_WBS#_I_EQ')]/x:choice[contains(@meta:field_id_overwrite,'SO_#HAS_WBS#_I_NE')]", namespaces=xmlforms_ns)
+    wbs_field = form_tree.xpath(
+        "//x:choicefield[contains(@id,'SO_#HAS_WBS#_I_EQ')]/x:choice[contains(@meta:field_id_overwrite,'SO_#HAS_WBS#_I_NE')]",
+        namespaces=xmlforms_ns,
+    )
     if len(wbs_field) > 0:
-      wbs_field[0].attrib['selected'] = 'true'
+        wbs_field[0].attrib["selected"] = "true"
 
-    area_field = form_tree.xpath("//x:numberfield[contains(@id,'SO_#SQMETER_FROM#_I_GE')]", namespaces=xmlforms_ns)
-    area_field[0].text = str(params['area_min'])
+    area_field = form_tree.xpath(
+        "//x:numberfield[contains(@id,'SO_#SQMETER_FROM#_I_GE')]",
+        namespaces=xmlforms_ns,
+    )
+    area_field[0].text = str(params["area_min"])
 
     # rooms_field = form_tree.xpath("//x:numberfield[contains(@id,'SO_#ROOM_FROM#_I_GE')]", namespaces=xmlforms_ns)
     # rooms_field[0].text = '2'
 
-    rent_field = form_tree.xpath("//x:numberfield[contains(@id,'SO_#GROSSCD#_I_LE')]", namespaces=xmlforms_ns)
-    rent_field[0].text = str(params['rent_total_max'])
+    rent_field = form_tree.xpath(
+        "//x:numberfield[contains(@id,'SO_#GROSSCD#_I_LE')]", namespaces=xmlforms_ns
+    )
+    rent_field[0].text = str(params["rent_total_max"])
 
-    filled_form_str = etree.tostring(form_tree, xml_declaration = True, pretty_print = True, encoding='UTF-8')
-    
+    filled_form_str = etree.tostring(
+        form_tree, xml_declaration=True, pretty_print=True, encoding="UTF-8"
+    )
+
     # open form
-    forms_params['name'] = 'openform'
-    openform = s.get(f'{xmlforms_url}?{urlencode(forms_params)}', headers=search_headers)
+    forms_params["name"] = "openform"
+    openform = s.get(
+        f"{xmlforms_url}?{urlencode(forms_params)}", headers=search_headers
+    )
     openform.raise_for_status()
 
     # save form
     forms_submit_params = {
-      'application': 'ESQ_IA_REOBJ',
-      'sap-client': 451,
-      'command': 'action',
-      'name': 'save',
-      'id': new_uuid,
-      'api': '6.139',
-      'head-oppc-version': '6.139.10',
-      'originalId': filter_form_id
+        "application": "ESQ_IA_REOBJ",
+        "sap-client": 451,
+        "command": "action",
+        "name": "save",
+        "id": new_uuid,
+        "api": "6.139",
+        "head-oppc-version": "6.139.10",
+        "originalId": filter_form_id,
     }
 
-    form_submit = s.post(f'{xmlforms_url}?{urlencode(forms_submit_params)}', data=filled_form_str, headers=search_headers)
+    form_submit = s.post(
+        f"{xmlforms_url}?{urlencode(forms_submit_params)}",
+        data=filled_form_str,
+        headers=search_headers,
+    )
     form_submit.raise_for_status()
 
     # request results
-    forms_submit_params['name'] = 'search_re_obj'
-    form_request = s.get(f'{xmlforms_url}?{urlencode(forms_submit_params)}', headers=search_headers)
+    forms_submit_params["name"] = "search_re_obj"
+    form_request = s.get(
+        f"{xmlforms_url}?{urlencode(forms_submit_params)}", headers=search_headers
+    )
     form_request.raise_for_status()
 
     # get results
     results_params = {
-      'application': 'ESQ_IA_REOBJ',
-      'sap-client': 451,
-      'command': 'action',
-      'name': 'boxlist',
-      'api': '6.139',
-      'head-oppc-version': '6.139.10',
-      '_': int(datetime.timestamp(datetime.now()))
+        "application": "ESQ_IA_REOBJ",
+        "sap-client": 451,
+        "command": "action",
+        "name": "boxlist",
+        "api": "6.139",
+        "head-oppc-version": "6.139.10",
+        "_": int(datetime.timestamp(datetime.now())),
     }
-    results_request = s.get(f'{xmlforms_url}?{urlencode(results_params)}', headers=search_headers)
+    results_request = s.get(
+        f"{xmlforms_url}?{urlencode(results_params)}", headers=search_headers
+    )
     results_request.raise_for_status()
-    results_request.encoding = 'utf-8'
+    results_request.encoding = "utf-8"
 
-    return results_request.text.encode('utf-8')
+    return results_request.text.encode("utf-8")
 
-    #https://portal1s.easysquare.com/prorex/xmlforms/image.jpg?application=ESQ_IA_REOBJ&sap-client=451&api=6.139&command=action&id=E7372CD3-92A6-A918-0604-46A9CFD1864F&name=get&head-oppc-version=6.139.10&head-oppc-id=36F02D7F-9EA7-4458-AE49-967A87FFA5C9
+    # https://portal1s.easysquare.com/prorex/xmlforms/image.jpg?application=ESQ_IA_REOBJ&sap-client=451&api=6.139&command=action&id=E7372CD3-92A6-A918-0604-46A9CFD1864F&name=get&head-oppc-version=6.139.10&head-oppc-id=36F02D7F-9EA7-4458-AE49-967A87FFA5C9
 
     #  https://portal1s.easysquare.com/meinehowoge/index.html?deeplink=%2FESQ_IA_REOBJ%2FESQ_VM_REOBJ_ALL#/formApp/%252Fsheet%252F0%252Fsection%252F2%252Fsheet%252F0%252Fsection%252F/E7372CD3-92A6-A918-0604-46A9CFD1864F/%252Fsection%252F0%252Fbox%252F0%252Fhead%252F0
 

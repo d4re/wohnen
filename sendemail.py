@@ -1,26 +1,24 @@
-#coding: utf-8
+# coding: utf-8
 
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.header import Header
 import logging
-import config
-import yaml
-import dogpics
+import smtplib
+from email.header import Header
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
+import yaml
 from jinja2 import Environment, select_autoescape
 
+import config
+import dogpics
 
-env = Environment(
-    autoescape=select_autoescape()
-)
+env = Environment(autoescape=select_autoescape())
 
 logger = logging.getLogger(__name__)
 
 email_account: config.EmailAccount = None
 
-tpl_text_email = u"""Hundi: {{dogpic}}
+tpl_text_email = """Hundi: {{dogpic}}
 
 Duuuu, ich rieche neue neue Inserate! *schwanzwedel*
 
@@ -49,7 +47,7 @@ Besonderheiten:{% for feature in flat.features %}
 {% endfor %}
 """
 
-tpl_html_email = u"""
+tpl_html_email = """
 <h3>Duuuu, ich rieche neue neue Inserate! *schwanzwedel*</h3>
 
 <p><img src="{{dogpic}}" width="600" /></p>
@@ -83,6 +81,7 @@ Besonderheiten:<br/>
 {% endfor %}
 """
 
+
 def get_dogpic():
     try:
         return dogpics.get_random_dogpic()
@@ -96,29 +95,35 @@ def create_email_body(sites, dogpic, tpl):
 
     return template.render(sites=sites, dogpic=dogpic)
 
+
 def create_email(sites, emails, account: config.EmailAccount):
     dogpic = get_dogpic()
 
-    msg = MIMEMultipart('alternative')
+    msg = MIMEMultipart("alternative")
 
-    plain = MIMEText(create_email_body(sites, dogpic, tpl_text_email), "text", _charset="utf-8")
-    html = MIMEText(create_email_body(sites, dogpic, tpl_html_email), "html", _charset="utf-8")
+    plain = MIMEText(
+        create_email_body(sites, dogpic, tpl_text_email), "text", _charset="utf-8"
+    )
+    html = MIMEText(
+        create_email_body(sites, dogpic, tpl_html_email), "html", _charset="utf-8"
+    )
     msg.attach(plain)
     msg.attach(html)
 
-    email_from = Header(account.name_from, 'utf-8')
-    email_from.append(f'<{account.email_from}>', 'ascii')
+    email_from = Header(account.name_from, "utf-8")
+    email_from.append(f"<{account.email_from}>", "ascii")
 
     new_flats = sum([len(flats) for flats in sites.values()])
     if new_flats == 1:
-        new_msg = 'neues Wohnungsangebot'
+        new_msg = "neues Wohnungsangebot"
     else:
-        new_msg = 'neue Wohnungsangebote'
+        new_msg = "neue Wohnungsangebote"
 
-    msg['Subject'] = Header(f'{new_flats} {new_msg} erschnüffelt', 'utf-8')
+    msg["Subject"] = Header(f"{new_flats} {new_msg} erschnüffelt", "utf-8")
     msg["From"] = email_from
     msg["To"] = ", ".join(emails)
     return msg
+
 
 def send_email(sites, emails):
     global email_account
@@ -137,6 +142,7 @@ def send_email(sites, emails):
         logger.error(e)
         logger.debug(msg.as_string())
         raise
+
 
 def test_format_body(sites):
     print(create_email_body(sites, dogpics.DEFAULTDOG, tpl_html_email))
