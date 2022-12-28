@@ -122,11 +122,19 @@ def parse(html_input):
         )[0].text_content()
         flat_dict["properties"]["Eingestellt"] = flat_dict["date_found"]
 
-        # Besonderheiten
-        flat_dict["features"] = []
-        all_features = flat.xpath(".//span[contains(@class, 'simpletag')]")
-        for feature in all_features:
-            flat_dict["features"].append(feature.text_content())
+        bottom = flat.xpath(".//div[contains(@class,'aditem-main--bottom')]")[0]
+        tags = bottom.xpath(".//span[contains(@class, 'simpletag')]")
+        misc = []
+        for tag in tags:
+          text: str = tag.text_content()
+          if text.count("m²"):
+            flat_dict["properties"]["area"] = text
+          elif text.count("Zimmer"):
+            flat_dict["properties"]["rooms"] = text
+          else:
+            misc.append(text)
+        if misc:
+          flat_dict["properties"]["misc"] = ", ".join(misc)
 
         flat_dict["landlord"] = ""
 
