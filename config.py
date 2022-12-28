@@ -49,8 +49,7 @@ data_path = f"{Path.home()}/wohnen/data"
 loglevel = logging.DEBUG
 logfile = f"{data_path}/scrape.log"
 
-# Set searches
-# This only has an effect when run with --scrape
+# Set filter parameters
 query_parameters = {
     "area_min": 50,
     "rooms_min": 1,
