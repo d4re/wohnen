@@ -3,7 +3,7 @@ import urllib.parse
 
 from telegram import Update
 from telegram.constants import ParseMode
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, AIORateLimiter
 
 import config
 from scanner import find_flats
@@ -85,7 +85,7 @@ def format_message(idx: int, flat: dict) -> str:
 
 if __name__ == "__main__":
     telegram_account = config.get_telegram_account()
-    application = ApplicationBuilder().token(telegram_account.api_key).build()
+    application = ApplicationBuilder().token(telegram_account.api_key).rate_limiter(AIORateLimiter()).build()
 
     register_handler = CommandHandler("register", register)
     application.add_handler(register_handler)
