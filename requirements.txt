@@ -1,0 +1,9 @@
+jinja2
+lxml
+pydantic
+python-telegram-bot>=v20.0b0
+pyyaml
+requests
+black
+flake8
+isort
