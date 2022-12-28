@@ -59,11 +59,11 @@ async def update(context: ContextTypes.DEFAULT_TYPE) -> None:
             if map_url:
                 await context.bot.send_photo(id, map_url)
             for message in messages:
-                await context.bot.send_message(id, message, parse_mode=ParseMode.MARKDOWN_V2)
+                await context.bot.send_message(id, message, parse_mode=ParseMode.HTML)
 
 
 def get_marker(idx: int, flat: dict) -> str:
-    marker_tpl = "&markers=color:{color}%7Clabel:{idx}%7{pos_str}"
+    marker_tpl = "&markers=color:{color}%7Clabel:{idx}%7C{pos_str}"
     if pos := flat.get("pos"):
         pos_str = f"{pos['lat']},{pos['long']}"
         return marker_tpl.format(color="0x00FF00", idx=idx, pos_str=pos_str)
@@ -75,10 +75,11 @@ def get_marker(idx: int, flat: dict) -> str:
 
 
 def format_message(idx: int, flat: dict) -> str:
-    message = f"## {idx}: [{flat['title'][:str_len_limit]}]({flat['link']})"
-
+    message = f"<b>{idx}: {flat['title'][:str_len_limit]}</b>"
+    message += f"\n<b>Address</b>: {flat['addr']}"
     for name, value in flat["properties"].items():
-        message += f"\n**{name}:** {value[:str_len_limit]}"
+        message += f"\n<b>{name}:</b> {str(value)[:str_len_limit]}"
+    message += f"\n{flat['link']}"
     return message
 
 
