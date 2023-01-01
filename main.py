@@ -3,8 +3,12 @@ import urllib.parse
 
 from telegram import Update
 from telegram.constants import ParseMode
-from telegram.ext import (AIORateLimiter, ApplicationBuilder, CommandHandler,
-                          ContextTypes)
+from telegram.ext import (
+    AIORateLimiter,
+    ApplicationBuilder,
+    CommandHandler,
+    ContextTypes,
+)
 
 import config
 from scanner import find_flats
@@ -56,7 +60,7 @@ async def update(
     for group in grouped:
         markers = []
         messages = []
-        for idx, flat in enumerate(group):
+        for idx, flat in enumerate(group, start=1):
             markers.append(get_marker(idx, flat))
             messages.append(format_message(idx, flat, telegram_config.max_field_len))
         marker_query = "".join(markers)
