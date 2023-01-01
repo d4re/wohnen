@@ -1,5 +1,7 @@
 import requests
 
+from config import FlatParams
+
 search_url = "https://www.wbm.de/wohnungen-berlin/angebote-wbm/"
 
 search_headers = {
@@ -15,7 +17,7 @@ search_headers = {
 }
 
 
-def scrape(params):
+def scrape(flat_params: FlatParams):
     search = requests.get(search_url, headers=search_headers)
     search.raise_for_status()
 

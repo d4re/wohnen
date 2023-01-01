@@ -1,5 +1,7 @@
 import requests
 
+from config import FlatParams
+
 search_url_tpl = "https://www.wg-gesucht.de/wohnungen-in-Berlin.8.2.3.0.html?offer_filter=1&city_id=8&noDeact=1&categories%5B%5D=2&rent_types%5B%5D=2&sMin={area_min}&rMax={rent_total_max}&exc=2&img_only=1"
 
 search_headers = {
@@ -15,12 +17,12 @@ search_headers = {
 }
 
 
-def scrape(params):
+def scrape(flat_params: FlatParams):
 
     search_url = (
-        search_url_tpl.replace("{area_min}", str(params["area_min"]))
-        .replace("{rent_total_max}", str(params["rent_total_max"] + 200))
-        .replace("{rooms_min}", str(params["rooms_min"]))
+        search_url_tpl.replace("{area_min}", str(flat_params.area_min))
+        .replace("{rent_total_max}", str(flat_params.rent_total_max + 200))
+        .replace("{rooms_min}", str(flat_params.rooms_min))
     )
 
     search = requests.get(search_url, headers=search_headers)

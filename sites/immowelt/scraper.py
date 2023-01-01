@@ -2,6 +2,8 @@ import json
 
 import requests
 
+from config import FlatParams
+
 search_url_tpl = "https://www.immowelt.de/liste/berlin/wohnungen/mieten?ami={area_min}&d=true&efs=CERTIFICATE_OF_ELIGIBILITY&efs=NEW_BUILDING_PROJECT&pma={rent_base_max}&rmi={rooms_min}&sd=DESC&sf=TIMESTAMP&sp=1"
 # search_url = 'https://api.immowelt.com/residentialsearch/v1/searches'
 
@@ -35,7 +37,7 @@ search_headers = {
 }
 
 
-def scrape(params):
+def scrape(flat_params: FlatParams):
     # data = search_data.copy()
     # data['rooms']['min'] = params['rooms_min']
     # data['primaryArea']['min'] = params['area_min']
@@ -44,9 +46,9 @@ def scrape(params):
     #     data['excludedFeatureFilters'].append("CERTIFICATE_OF_ELIGIBILITY")
 
     search_url = (
-        search_url_tpl.replace("{area_min}", str(params["area_min"]))
-        .replace("{rent_base_max}", str(params["rent_base_max"]))
-        .replace("{rooms_min}", str(params["rooms_min"]))
+        search_url_tpl.replace("{area_min}", str(flat_params.area_min))
+        .replace("{rent_base_max}", str(flat_params.rent_base_max))
+        .replace("{rooms_min}", str(flat_params.rooms_min))
     )
 
     # search=requests.post(search_url, data=json.dumps(data), headers = search_headers)

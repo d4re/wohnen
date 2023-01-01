@@ -1,225 +1,65 @@
-import logging
 import os
 from pathlib import Path
-
+from typing import List
 import yaml
 from pydantic import BaseModel
 
-
-class EmailAccount(BaseModel):
-    name_from: str
-    email_from: str
-    host: str
-    port: int
-    username: str
-    password: str
+config_file = os.path.dirname(__file__) + "/local/config.yaml"
 
 
-class TelegramAccount(BaseModel):
+class General(BaseModel):
+    site_cache: str
+    period: int
+
+
+class FlatParams(BaseModel):
+    area_min: int
+    rooms_min: int
+    rooms_max: int
+    rent_base_max: int
+    rent_total_max: int
+    wbs: int
+
+
+class Filter(BaseModel):
+    allow: dict
+    block: dict
+
+
+class Search(BaseModel):
+    sites: List[str]
+    flat_params: FlatParams
+    filter: Filter
+
+
+class Telegram(BaseModel):
     name: str
+    max_field_len: int
     api_key: str
+    ids: List[int]
 
 
-accounts_file = os.path.dirname(__file__) + "/local/accounts.yaml"
+class Maps(BaseModel):
+    center: str
+    group_size: int
+    key: str
+    zoom: int
 
 
-def get_mail_account() -> EmailAccount:
-    with open(accounts_file, "r") as file:
-        accounts = yaml.safe_load(file)
-    return EmailAccount.parse_obj(accounts["email"])
+class Model(BaseModel):
+    general: General
+    search: Search
+    telegram: Telegram
+    maps: Maps
 
 
-def get_telegram_account() -> TelegramAccount:
-    with open(accounts_file, "r") as file:
-        accounts = yaml.safe_load(file)
-    return TelegramAccount.parse_obj(accounts["telegram_bot"])
+with open(config_file, "r") as file:
+    config_raw = yaml.safe_load(file)
 
+general = General.parse_obj(config_raw["general"])
+search = Search.parse_obj(config_raw["search"])
+telegram = Telegram.parse_obj(config_raw["telegram"])
+maps = Maps.parse_obj(config_raw["maps"])
 
-sites = [
-    "deutschewohnen",
-    "ebaykleinanzeigen",
-    "howoge",
-    "immowelt",
-    "inberlinwohnen",
-    "wbm",
-]
-
-data_path = f"{Path.home()}/wohnen/data"
-
-loglevel = logging.DEBUG
-logfile = f"{data_path}/scrape.log"
-
-# Set filter parameters
-query_parameters = {
-    "area_min": 50,
-    "rooms_min": 1,
-    "rooms_max": 4,
-    "rent_base_max": 1600,
-    "rent_total_max": 1600,
-    "wbs": 0,
-}
-
-filter = {
-    "allow": {},
-    "block": {
-        "title": [
-            "flatmate",
-            "untermiete",
-            "zwischenmiete",
-            "zwischemiete",
-            "zwischenvermiet",
-            "suche wohnung",
-            "suche 1",
-            "suche 2",
-            "suche 3",
-            "suche eine ",
-            "suche ein zimmer",
-            "suche mietwohnung",
-            "zum teilen",
-            "nur tauch",
-            "tausch",
-            "tauch wohnung",
-            "tauchwohnung",
-            "tauchen",
-            "zimmer gegen",
-            "swap",
-            "sublet",
-            "subrent",
-            "auf zeit",
-            "kurzzeit",
-            " befristet",
-            "temporary",
-            "für monat ",
-            " tage ",
-            " week",
-            " month",
-            " wochen",
-            " monate",
-            "1 monat",
-            " wg ",
-            " wg-",
-            "-wg",
-            "wg zimmer",
-            "wg-zimmer",
-            "er wg",
-            "er-wg",
-            "wohngemeinschaft",
-            "mitbewohner",
-            "shared apartment",
-            "shared room",
-            "*wbs*",
-            "mit wbs",
-            "wbs mit",
-            "+ wbs",
-            "!wbs",
-            "wbs-wohn",
-            "wbs-berechtigte",
-            "wbs-pflichtig",
-            "bedingung wbs",
-            "wbs wohnung",
-            "ferienwohnung",
-            "ferien wohnung",
-            "monteur",
-            "montage ",
-            "montagewohnung",
-            "studentenwohnheim",
-            "studenten-appartement",
-            "studenten wohnanlage",
-            "nur für studenten",
-            "students only",
-            "anfragestop",
-            "suche stellplatz",
-            "fensterputzer",
-            "münchen",
-            "eberswalde",
-            "ukraine",
-            "belohnung",
-            "prämie",
-            "ohne anmeldung",
-            " möblierte ",
-            "voll möbliert",
-            "einkommen zwischen",
-            "einkommensorientiert",
-        ],
-        "kiez": [
-            "steglitz",
-            "zehlendorf",
-            "wannsee",
-            "marienfelde",
-            "buckow",
-            "wilhelmsruh",
-            "dahlem",
-            "spandau",
-            "wittenau",
-            "tegel",
-            "grunewald",
-            "lichterfelde",
-            "lankwitz",
-            "lichtenrade",
-            "gropiusstadt",
-            "rudow",
-            "adlershof",
-            "köpenick",
-            "grünau",
-            "mahlsdorf",
-            "kaulsdorf",
-            "hellersdorf",
-            "heinersdorf",
-            "buch",
-            "märkisches viertel",
-            "rosenthal",
-            "blankenburg",
-            "hermsdorf",
-            "falkenhagener feld",
-            "staaken",
-            "friedenau",
-            "westend",
-            "lübars",
-            "haselhorst",
-            "siemensstadt",
-            "waidmannslust",
-            "altglienicke",
-        ],
-        "Beschreibung": [  # ebay kleinanzeigen field
-            "das zweite foto",
-            "das zweite bild",
-            "vielzahl an nachrichten",
-            "vielzahl von nachrichten",
-            "nur auf instagram",
-            "untervermieten",
-            "untermiet",
-            "zwischenmiete",
-            "zwischen miete",
-            "on vacation for",
-            "flat share",
-            "auf zeit",
-            "short-term",
-            "temporary",
-            "für die zeit",
-            "from now until",
-            " tage ",
-            "monatsweise",
-            "nur tausch",
-            "ich tausche",
-            "zum tausch",
-            "im tausch",
-            "tauschen",
-            "wohnungstausch",
-            "tauschwohnung",
-            "swap only",
-            "ich suche eine ",
-            "wir suchen eine ",
-            "belohnung",
-            "lundberg",
-            "lofgren",
-            "monteur",
-            "büroplatz",
-            "pendler",
-            "vermietende",
-            "ohne anmeldung",
-            "keine anmeldung",
-            "wg zimmer",
-            "lorem ipsum",
-        ],
-    },
-}
+cache_folder = Path(general.site_cache)
+cache_folder.mkdir(exist_ok=True)

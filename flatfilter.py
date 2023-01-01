@@ -16,40 +16,44 @@ def filter_list(flats):
         keep = False
 
         # first check, if we pick the flat due to match words (block list won't be considered)
-        for field in config.filter["allow"]:
-            for word in config.filter["allow"][field]:
+        filter = config.search.filter
+
+        for field, words in filter.allow.items():
+            for word in words:
                 if word in flat[field].lower():
                     logging.info(
                         f"Picked entry \"{flat['title']}\" due to \"{word}\" in {field}"
                     )
                     keep = True
+
         if keep:
             flat_list.append(flat)
             continue
 
         # now check the block list
-        for field in config.filter["block"]:
+        for field, words in filter.block.items():
+            text = ""
             if field in flat:  # try direct fields
-                string = flat[field].lower()
+                text = flat[field].lower()
             elif field in flat["properties"]:  # try also properties
-                string = flat["properties"][field].lower()
+                text = flat["properties"][field].lower()
 
-            for word in config.filter["block"][field]:
-                if word in string:
+            for word in words:
+                if word in text:
                     logging.info(
                         f"Skipped entry \"{flat['title']}\" due to \"{word}\" in {field}"
                     )
                     skip = True
-        
+
         if skip:
             continue
 
         # now use the configured filter values as they were not necessarily applied correctly in the site scraper
-        restrictions = config.query_parameters
+        restrictions = config.search.flat_params
         props = flat["properties"]
         if area_str := props.get("area"):
             area = parse_number(area_str)
-            if area < restrictions["area_min"]:
+            if area < restrictions.area_min:
                 logger.info(
                     f"Skipped appartment {flat['title']} due to area: {area_str}"
                 )
@@ -57,7 +61,7 @@ def filter_list(flats):
 
         if rooms_str := props.get("rooms"):
             rooms = parse_number(rooms_str)
-            if rooms < restrictions["rooms_min"] or rooms > restrictions["rooms_max"]:
+            if rooms < restrictions.rooms_min or rooms > restrictions.rooms_max:
                 logger.info(
                     f"Skipped appartment {flat['title']} due to rooms: {rooms_str}"
                 )
@@ -65,7 +69,7 @@ def filter_list(flats):
 
         if rent_str := props.get("rent_total"):
             rent = parse_number(rent_str)
-            if rent > restrictions["rent_total_max"]:
+            if rent > restrictions.rent_total_max:
                 logger.info(
                     f"Skipped appartment {flat['title']} due to rent: {rent_str}"
                 )

@@ -3,6 +3,8 @@ import time
 
 import requests
 
+from config import FlatParams
+
 logger = logging.getLogger(__name__)
 
 s = requests.Session()
@@ -71,17 +73,17 @@ result_data = {
 }
 
 
-def get_search(params):
+def get_search(flat_params: FlatParams):
     s = search_data.copy()
-    s["rooms_min"] = str(params["rooms_min"])
-    s["rooms_max"] = str(params["rooms_max"])
-    s["miete_max"] = str(params["rent_base_max"])
-    s["wbs"] = params["wbs"]
+    s["rooms_min"] = str(flat_params.rooms_min)
+    s["rooms_max"] = str(flat_params.rooms_max)
+    s["miete_max"] = str(flat_params.rent_base_max)
+    s["wbs"] = flat_params.wbs
     return s
 
 
-def scrape(params):
-    search_d = get_search(params)
+def scrape(flat_params: FlatParams):
+    search_d = get_search(flat_params)
     search = s.post(search_url, data=search_d, headers=search_headers)
     search.raise_for_status()
 

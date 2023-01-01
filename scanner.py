@@ -1,6 +1,7 @@
 import asyncio
 import importlib
 import logging
+from pathlib import Path
 
 import config
 import flatfilter
@@ -13,7 +14,7 @@ site_handlers = {}
 
 def init_handlers() -> None:
     global site_handlers
-    sites = config.sites
+    sites = config.search.sites
     for site in sites:
         spec_scraper = importlib.util.find_spec(f"sites.{site}.scraper")
         if spec_scraper is None:
@@ -37,12 +38,12 @@ async def find_flats() -> None:
     for site, (site_scraper, site_parser) in site_handlers.items():
         logger.debug(site)
 
-        jsonfile = JsonFile.open(f"{config.data_path}/{site}.json")
+        jsonfile = JsonFile.open(Path(config.general.site_cache) / f"{site}.json")
         loop = asyncio.get_event_loop()
 
         try:
             scraping = loop.run_in_executor(
-                None, site_scraper.scrape, config.query_parameters
+                None, site_scraper.scrape, config.search.flat_params
             )
             html = await scraping
         except Exception as error:

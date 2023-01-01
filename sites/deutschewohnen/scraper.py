@@ -2,6 +2,8 @@ import json
 
 import requests
 
+from config import FlatParams
+
 search_url = "https://immo-api.deutsche-wohnen.com/estate/findByFilter"
 
 search_headers = {
@@ -28,17 +30,17 @@ search_data = {
 }
 
 
-def get_search(params):
+def get_search(flat_params: FlatParams):
     s = search_data.copy()
 
-    s["area"] = str(params["area_min"])
-    s["price"] = str(params["rent_total_max"])
+    s["area"] = str(flat_params.area_min)
+    s["price"] = str(flat_params.rent_total_max)
 
     return s
 
 
-def scrape(params):
-    search_d = get_search(params)
+def scrape(flat_params: FlatParams):
+    search_d = get_search(flat_params)
     search = requests.post(
         search_url, data=json.dumps(search_d), headers=search_headers
     )

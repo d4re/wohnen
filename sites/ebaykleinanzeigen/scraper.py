@@ -1,5 +1,7 @@
 import requests
 
+from config import FlatParams
+
 search_url_tpl = "https://www.ebay-kleinanzeigen.de/s-wohnung-mieten/10557/anzeige:angebote/preis::{max_rent}/c203l9672r9"
 
 search_headers = {
@@ -15,8 +17,8 @@ search_headers = {
 }
 
 
-def scrape(params):
-    search_url = search_url_tpl.replace("{max_rent}", str(params["rent_total_max"]))
+def scrape(flat_params: FlatParams):
+    search_url = search_url_tpl.replace("{max_rent}", str(flat_params.rent_total_max))
 
     search = requests.get(search_url, headers=search_headers)
     search.raise_for_status()

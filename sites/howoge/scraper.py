@@ -6,6 +6,9 @@ from urllib.parse import urlencode
 import requests
 from lxml import etree
 
+from config import FlatParams
+
+# flake8: noqa: W291
 """
 Step 1:
 
@@ -832,7 +835,7 @@ s.headers.update(common_headers)
 s.cookies.update({"esq-alias": "/meinehowoge", "sap-usercontext": "sap-client=451"})
 
 
-def scrape(params):
+def scrape(flat_params: FlatParams):
 
     api_params = {}
     api_params.update(default_params)
@@ -924,7 +927,7 @@ def scrape(params):
         "//x:numberfield[contains(@id,'SO_#SQMETER_FROM#_I_GE')]",
         namespaces=xmlforms_ns,
     )
-    area_field[0].text = str(params["area_min"])
+    area_field[0].text = str(flat_params.area_min)
 
     # rooms_field = form_tree.xpath("//x:numberfield[contains(@id,'SO_#ROOM_FROM#_I_GE')]", namespaces=xmlforms_ns)
     # rooms_field[0].text = '2'
@@ -932,7 +935,7 @@ def scrape(params):
     rent_field = form_tree.xpath(
         "//x:numberfield[contains(@id,'SO_#GROSSCD#_I_LE')]", namespaces=xmlforms_ns
     )
-    rent_field[0].text = str(params["rent_total_max"])
+    rent_field[0].text = str(flat_params.rent_total_max)
 
     filled_form_str = etree.tostring(
         form_tree, xml_declaration=True, pretty_print=True, encoding="UTF-8"

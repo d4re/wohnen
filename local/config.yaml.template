@@ -1,0 +1,191 @@
+general:
+  site_cache: /workspace/cache/
+  period: 900
+
+search:
+  sites:
+    - deutschewohnen
+    - ebaykleinanzeigen
+    - howoge
+    - immowelt
+    - inberlinwohnen
+    - wbm
+  flat_params: 
+    area_min: 50
+    rooms_min: 2
+    rooms_max: 4
+    rent_base_max: 1600
+    rent_total_max: 1600
+    wbs: 0
+  filter:
+    allow: 
+    block:
+      Beschreibung:
+      - das zweite foto
+      - das zweite bild
+      - vielzahl an nachrichten
+      - vielzahl von nachrichten
+      - nur auf instagram
+      - untervermieten
+      - untermiet
+      - zwischenmiete
+      - zwischen miete
+      - on vacation for
+      - flat share
+      - auf zeit
+      - short-term
+      - temporary
+      - "f\xFCr die zeit"
+      - from now until
+      - ' tage '
+      - monatsweise
+      - nur tausch
+      - ich tausche
+      - zum tausch
+      - im tausch
+      - tauschen
+      - wohnungstausch
+      - tauschwohnung
+      - swap only
+      - 'ich suche eine '
+      - 'wir suchen eine '
+      - belohnung
+      - lundberg
+      - lofgren
+      - monteur
+      - "b\xFCroplatz"
+      - pendler
+      - vermietende
+      - ohne anmeldung
+      - keine anmeldung
+      - wg zimmer
+      - lorem ipsum
+      kiez:
+      - steglitz
+      - zehlendorf
+      - wannsee
+      - marienfelde
+      - buckow
+      - wilhelmsruh
+      - dahlem
+      - spandau
+      - wittenau
+      - tegel
+      - grunewald
+      - lichterfelde
+      - lankwitz
+      - lichtenrade
+      - gropiusstadt
+      - rudow
+      - adlershof
+      - "k\xF6penick"
+      - "gr\xFCnau"
+      - mahlsdorf
+      - kaulsdorf
+      - hellersdorf
+      - heinersdorf
+      - buch
+      - "m\xE4rkisches viertel"
+      - rosenthal
+      - blankenburg
+      - hermsdorf
+      - falkenhagener feld
+      - staaken
+      - friedenau
+      - westend
+      - "l\xFCbars"
+      - haselhorst
+      - siemensstadt
+      - waidmannslust
+      - altglienicke
+      title:
+      - flatmate
+      - untermiete
+      - zwischenmiete
+      - zwischemiete
+      - zwischenvermiet
+      - suche wohnung
+      - suche 1
+      - suche 2
+      - suche 3
+      - 'suche eine '
+      - suche ein zimmer
+      - suche mietwohnung
+      - zum teilen
+      - nur tauch
+      - tausch
+      - tauch wohnung
+      - tauchwohnung
+      - tauchen
+      - zimmer gegen
+      - swap
+      - sublet
+      - subrent
+      - auf zeit
+      - kurzzeit
+      - ' befristet'
+      - temporary
+      - "f\xFCr monat "
+      - ' tage '
+      - ' week'
+      - ' month'
+      - ' wochen'
+      - ' monate'
+      - 1 monat
+      - ' wg '
+      - ' wg-'
+      - -wg
+      - wg zimmer
+      - wg-zimmer
+      - er wg
+      - er-wg
+      - wohngemeinschaft
+      - mitbewohner
+      - shared apartment
+      - shared room
+      - '*wbs*'
+      - mit wbs
+      - wbs mit
+      - + wbs
+      - '!wbs'
+      - wbs-wohn
+      - wbs-berechtigte
+      - wbs-pflichtig
+      - bedingung wbs
+      - wbs wohnung
+      - ferienwohnung
+      - ferien wohnung
+      - monteur
+      - 'montage '
+      - montagewohnung
+      - studentenwohnheim
+      - studenten-appartement
+      - studenten wohnanlage
+      - "nur f\xFCr studenten"
+      - students only
+      - anfragestop
+      - suche stellplatz
+      - fensterputzer
+      - "m\xFCnchen"
+      - eberswalde
+      - ukraine
+      - belohnung
+      - "pr\xE4mie"
+      - ohne anmeldung
+      - " m\xF6blierte "
+      - "voll m\xF6bliert"
+      - einkommen zwischen
+      - einkommensorientiert
+
+telegram:
+  name: Berlin_flat_finder_bot
+  max_field_len: 60
+  api_key: add telegram bot api key here
+  ids: []
+  
+maps:
+  center: berlin
+  group_size: 5
+  key: add google maps api key here
+  zoom: 11
+
