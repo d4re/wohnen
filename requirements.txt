@@ -1,7 +1,7 @@
 jinja2
 lxml
 pydantic
-python-telegram-bot[rate-limiter]>=v20.0b0
+python-telegram-bot[rate-limiter,job-queue]>=v20.0b0
 pyyaml
 requests
 black
