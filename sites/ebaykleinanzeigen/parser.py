@@ -126,15 +126,15 @@ def parse(html_input):
         tags = bottom.xpath(".//span[contains(@class, 'simpletag')]")
         misc = []
         for tag in tags:
-          text: str = tag.text_content()
-          if text.count("m²"):
-            flat_dict["properties"]["area"] = text
-          elif text.count("Zimmer"):
-            flat_dict["properties"]["rooms"] = text
-          else:
-            misc.append(text)
+            text: str = tag.text_content()
+            if text.count("m²"):
+                flat_dict["properties"]["area"] = text
+            elif text.count("Zimmer"):
+                flat_dict["properties"]["rooms"] = text
+            else:
+                misc.append(text)
         if misc:
-          flat_dict["properties"]["misc"] = ", ".join(misc)
+            flat_dict["properties"]["misc"] = ", ".join(misc)
 
         flat_dict["landlord"] = ""
 
