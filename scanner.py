@@ -12,9 +12,8 @@ logger = logging.getLogger(__name__)
 site_handlers = {}
 
 
-def init_handlers() -> None:
-    global site_handlers
-    sites = config.search.sites
+def init_handlers(sites: list[str]) -> None:
+    global site_handlerss
     for site in sites:
         spec_scraper = importlib.util.find_spec(f"sites.{site}.scraper")
         if spec_scraper is None:
@@ -30,20 +29,20 @@ def init_handlers() -> None:
         site_handlers[site] = (site_scraper, site_parser)
 
 
-async def find_flats() -> None:
+async def find_flats(search_conf: config.Search, cache_folder: Path) -> None:
     if not site_handlers:
-        init_handlers()
+        init_handlers(search_conf.sites)
     sites = {}
 
     for site, (site_scraper, site_parser) in site_handlers.items():
         logger.debug(site)
 
-        jsonfile = JsonFile.open(Path(config.general.site_cache) / f"{site}.json")
+        jsonfile = JsonFile.open(cache_folder / f"{site}.json")
         loop = asyncio.get_event_loop()
 
         try:
             scraping = loop.run_in_executor(
-                None, site_scraper.scrape, config.search.flat_params
+                None, site_scraper.scrape, search_conf.flat_params
             )
             html = await scraping
         except Exception as error:
@@ -55,7 +54,7 @@ async def find_flats() -> None:
             flats = await parsing
 
             # filter flats
-            flats = flatfilter.filter_list(flats)
+            flats = flatfilter.filter_list(flats, search_config=search_conf)
             logger.debug(f"Found {len(flats)} valid flats")
         except Exception:
             logger.exception("parsing or filtering failed")

@@ -1,15 +1,11 @@
-import os
 from pathlib import Path
 from typing import List
 
 import yaml
 from pydantic import BaseModel
 
-config_file = os.path.dirname(__file__) + "/local/config.yaml"
-
 
 class General(BaseModel):
-    site_cache: str
     period: int
 
 
@@ -47,20 +43,14 @@ class Maps(BaseModel):
     zoom: int
 
 
-class Model(BaseModel):
+class Config(BaseModel):
     general: General
     search: Search
     telegram: Telegram
     maps: Maps
 
 
-with open(config_file, "r") as file:
-    config_raw = yaml.safe_load(file)
-
-general = General.parse_obj(config_raw["general"])
-search = Search.parse_obj(config_raw["search"])
-telegram = Telegram.parse_obj(config_raw["telegram"])
-maps = Maps.parse_obj(config_raw["maps"])
-
-cache_folder = Path(general.site_cache)
-cache_folder.mkdir(exist_ok=True)
+def load_config(config_file) -> Config:
+    with open(config_file, "r") as file:
+        config_raw = yaml.safe_load(file)
+    return Config.parse_obj(config_raw)

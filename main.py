@@ -1,4 +1,6 @@
+import argparse
 import logging
+from pathlib import Path
 import urllib.parse
 
 from telegram import Update
@@ -18,9 +20,9 @@ logging.basicConfig(
 )
 
 
-async def register(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def register(update: Update, context: ContextTypes.DEFAULT_TYPE, ids: list[int]):
     id = update.effective_chat.id
-    config.telegram.ids.append(id)
+    ids.append(id)
     # TODO: update yaml
     logging.info(f"New registration: {id}")
     await context.bot.send_message(
@@ -29,9 +31,11 @@ async def register(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-async def unregister(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def unregister(
+    update: Update, context: ContextTypes.DEFAULT_TYPE, ids: list[int]
+):
     id = update.effective_chat.id
-    config.telegram.ids.remove(id)
+    ids.remove(id)
     # TODO: update yaml
     logging.info(f"Unregistering id {id}")
     await context.bot.send_message(
@@ -42,39 +46,39 @@ async def unregister(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def update(
     context: ContextTypes.DEFAULT_TYPE,
-    maps_config: config.Maps,
-    telegram_config: config.Telegram,
+    conf: config.Config,
+    cache_folder: Path,
 ) -> None:
     """Send periodic message"""
     maps_api = "https://maps.googleapis.com/maps/api/staticmap?center={center}&zoom={zoom}&size=500x500&scale=2{marker_query}&key={key}"
-    sites = await find_flats()
+    sites = await find_flats(conf.search, cache_folder)
     flats = []
     for name, site in sites.items():
         for flat in site:
             flat["site"] = name
             flats.append(flat)
     grouped = (
-        flats[i : i + maps_config.group_size]
-        for i in range(0, len(flats), maps_config.group_size)
+        flats[i : i + conf.maps.group_size]
+        for i in range(0, len(flats), conf.maps.group_size)
     )
     for group in grouped:
         markers = []
         messages = []
         for idx, flat in enumerate(group, start=1):
             markers.append(get_marker(idx, flat))
-            messages.append(format_message(idx, flat, telegram_config.max_field_len))
+            messages.append(format_message(idx, flat, conf.telegram.max_field_len))
         marker_query = "".join(markers)
         if marker_query:
             map_url = maps_api.format(
-                center=maps_config.center,
+                center=conf.maps.center,
                 marker_query=marker_query,
-                key=maps_config.key,
-                zoom=maps_config.zoom,
+                key=conf.maps.key,
+                zoom=conf.maps.zoom,
             )
         else:
             map_url = ""
 
-        for id in telegram_config.ids:
+        for id in conf.telegram.ids:
             if map_url:
                 await context.bot.send_photo(id, map_url)
             for message in messages:
@@ -103,22 +107,36 @@ def format_message(idx: int, flat: dict, str_len_limit: int) -> str:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog="Flat finder",
+        description="Get flats sent to you via telgram",
+        epilog="Text at the bottom of help",
+    )
+    parser.add_argument("--config", type=str, default="local/config.yaml")
+    parser.add_argument("--cache-folder", type=str, default="local/cache/")
+    args = parser.parse_args()
+    conf = config.load_config(args.config)
     application = (
         ApplicationBuilder()
-        .token(config.telegram.api_key)
+        .token(conf.telegram.api_key)
         .rate_limiter(AIORateLimiter())
         .build()
     )
 
-    register_handler = CommandHandler("register", register)
+    register_handler = CommandHandler(
+        "register", lambda update, context: register(update, context, conf.telegram.ids)
+    )
     application.add_handler(register_handler)
 
-    unregister_handler = CommandHandler("unregister", unregister)
+    unregister_handler = CommandHandler(
+        "unregister",
+        lambda update, context: unregister(update, context, conf.telegram.ids),
+    )
     application.add_handler(unregister_handler)
 
     application.job_queue.run_repeating(
-        lambda x: update(x, config.maps, config.telegram),
-        interval=600,
+        lambda x: update(x, conf, Path(args.cache_folder)),
+        interval=conf.general.period,
         first=10,
     )
 

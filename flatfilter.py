@@ -8,7 +8,7 @@ import config
 logger = logging.getLogger(__name__)
 
 
-def filter_list(flats):
+def filter_list(flats, search_config: config.Search):
     flat_list = []
 
     for flat in flats:
@@ -16,7 +16,7 @@ def filter_list(flats):
         keep = False
 
         # first check, if we pick the flat due to match words (block list won't be considered)
-        filter = config.search.filter
+        filter = search_config.filter
 
         for field, words in filter.allow.items():
             for word in words:
@@ -49,7 +49,7 @@ def filter_list(flats):
             continue
 
         # now use the configured filter values as they were not necessarily applied correctly in the site scraper
-        restrictions = config.search.flat_params
+        restrictions = search_config.flat_params
         props = flat["properties"]
         if area_str := props.get("area"):
             area = parse_number(area_str)
