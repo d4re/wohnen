@@ -116,10 +116,12 @@ if __name__ == "__main__":
     parser.add_argument("--cache-folder", type=str, default="local/cache/")
     args = parser.parse_args()
     conf = config.load_config(args.config)
+
     application = (
         ApplicationBuilder()
         .token(conf.telegram.api_key)
         .rate_limiter(AIORateLimiter())
+        .connect_timeout(10)
         .build()
     )
 
