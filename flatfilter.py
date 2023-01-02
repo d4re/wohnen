@@ -2,6 +2,7 @@ import logging
 import numbers
 import re
 from decimal import Decimal
+from typing import Union
 
 import config
 
@@ -80,7 +81,7 @@ def filter_list(flats, search_config: config.Search):
     return flat_list
 
 
-def parse_number(number_str: str | int) -> Decimal:
+def parse_number(number_str: Union[str, int]) -> Decimal:
     if isinstance(number_str, numbers.Number):
         return Decimal(f"{number_str:2}")
     else:
