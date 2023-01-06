@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 class General(BaseModel):
     period: int
+    auto_apply: bool
 
 
 class FlatParams(BaseModel):

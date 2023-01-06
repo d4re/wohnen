@@ -13,7 +13,7 @@ from telegram.ext import (
 )
 
 import config
-from site_handler import find_flats
+from site_handler import apply_to_flats, find_flats
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -52,7 +52,8 @@ async def update(
     """Send periodic message"""
     maps_api = "https://maps.googleapis.com/maps/api/staticmap?center={center}&zoom={zoom}&size=500x500&scale=2{marker_query}&key={key}"
     sites = await find_flats(conf.search, cache_folder)
-
+    if conf.general.auto_apply:
+        await apply_to_flats(sites)
     flats = []
     for name, site in sites.items():
         for flat in site:

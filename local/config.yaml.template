@@ -1,5 +1,6 @@
 general:
   period: 900
+  auto_apply: true
 
 search:
   sites:
