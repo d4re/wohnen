@@ -80,9 +80,9 @@ async def update(
 
         for id in conf.telegram.ids:
             if map_url:
-                await context.bot.send_photo(id, map_url)
+                await context.bot.send_photo(id, map_url, disable_notification=(not conf.telegram.notify))
             for message in messages:
-                await context.bot.send_message(id, message, parse_mode=ParseMode.HTML)
+                await context.bot.send_message(id, message, parse_mode=ParseMode.HTML, disable_notification=(not conf.telegram.notify))
 
 
 def get_marker(idx: int, flat: dict) -> str:

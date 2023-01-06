@@ -247,6 +247,7 @@ telegram:
   max_field_len: 60
   api_key: add telegram bot api key here
   ids: []
+  notify: false
   
 maps:
   center: berlin

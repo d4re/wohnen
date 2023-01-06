@@ -35,6 +35,7 @@ class Telegram(BaseModel):
     max_field_len: int
     api_key: str
     ids: List[int]
+    notify: bool
 
 
 class Maps(BaseModel):
