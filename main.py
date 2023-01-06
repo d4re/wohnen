@@ -53,7 +53,7 @@ async def update(
     maps_api = "https://maps.googleapis.com/maps/api/staticmap?center={center}&zoom={zoom}&size=500x500&scale=2{marker_query}&key={key}"
     sites = await find_flats(conf.search, cache_folder)
     if conf.general.auto_apply:
-        await apply_to_flats(sites)
+        await apply_to_flats(sites, conf.applicant)
     flats = []
     for name, site in sites.items():
         for flat in site:

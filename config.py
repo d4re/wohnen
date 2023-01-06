@@ -45,12 +45,23 @@ class Maps(BaseModel):
     key: str
     zoom: int
 
+class Applicant(BaseModel):
+    forename: str
+    surname: str
+    street: str
+    plz: str
+    city: str
+    email: str
+    phone: str
+
 
 class Config(BaseModel):
     general: General
     search: Search
     telegram: Telegram
     maps: Maps
+    applicant: Applicant
+
 
 
 def load_config(config_file) -> Config:

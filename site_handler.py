@@ -91,13 +91,13 @@ async def find_flats(search_conf: config.Search, cache_folder: Path) -> dict:
 
     return sites
 
-async def apply_to_flats(sites: dict):
+async def apply_to_flats(sites: dict, applicant: config.Applicant):
     global site_handlers
     loop = asyncio.get_event_loop()
     for site, flats in sites.items():
         if applier := site_handlers[site].applier:
             for flat in flats:
-                applying = loop.run_in_executor(None, applier.apply, flat)
+                applying = loop.run_in_executor(None, applier.apply, flat, applicant)
                 success = await applying
                 if not success:
                     logger.error(f"Error applying for flat {flat['title']} on site {site}")

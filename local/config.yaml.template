@@ -255,3 +255,11 @@ maps:
   key: add google maps api key here
   zoom: 11
 
+applicant:
+  forename: Max
+  surname: Mustermann
+  street: Musterstr. 12
+  plz: 12345
+  city: Musterstadt
+  email: muster@mail.de
+  phone: 0123456789
