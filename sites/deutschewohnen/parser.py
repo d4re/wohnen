@@ -78,6 +78,7 @@ def parse(html_input):
         flat_dict[
             "addr"
         ] = f"{flat['address']['street']} {flat['address']['houseNumber']}, {flat['address']['zip']} {flat['address']['city']}"
+        flat_dict["plz"] = flat['address']['zip']
         flat_dict["kiez"] = ""
         if "district" in flat["address"]:
             flat_dict["kiez"] = flat["address"]["district"]
