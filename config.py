@@ -19,8 +19,9 @@ class FlatParams(BaseModel):
 
 
 class Filter(BaseModel):
-    allow: dict
-    block: dict
+    allow: dict[str, list[str]]
+    block: dict[str, list[str]]
+    require: dict[str, list[str]]
 
 
 class Search(BaseModel):
