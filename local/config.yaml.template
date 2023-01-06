@@ -1,5 +1,4 @@
 general:
-  site_cache: /workspace/cache/
   period: 900
 
 search:
