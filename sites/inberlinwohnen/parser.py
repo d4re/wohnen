@@ -6,6 +6,7 @@ import logging
 import re
 import urllib
 from urllib.parse import quote, urljoin
+from geopy.geocoders import Nominatim
 
 from lxml import html
 
@@ -94,6 +95,8 @@ def parse(html_input):
         "Gesamtmiete": "rent_total",
     }
 
+    geolocator = Nominatim(user_agent="flat_finder")
+
     results = json.loads(html_input)
 
     # get location markers first
@@ -105,6 +108,8 @@ def parse(html_input):
             if marker_id_s:
                 marker_id = marker_id_s.group(1)
                 markers[marker_id] = {"lat": marker[0], "long": marker[1]}
+
+     
 
     # parse results
     tree = html.fromstring(results["searchresults"])
@@ -118,7 +123,7 @@ def parse(html_input):
         id = flat.xpath(".//a[contains(@id,'flat_')]/@id")[0].replace("flat_", "")
         link = flat.xpath(".//a[contains(@title,'Die detailierte')]/@href")[0]
 
-        # Adresse
+        # augment address as it typically only contains street and number, not plz and city
         adresse = (
             flat.xpath(".//a[contains(@title,'Auf Karte anzeigen')]")[0]
             .text_content()
@@ -126,6 +131,12 @@ def parse(html_input):
             .split(",")
         )
         addr = adresse[0]
+        if marker:= markers.get(id):
+          location = geolocator.reverse((marker["lat"], marker["long"]))
+          addr_parts = location.address.split(",")
+          # the last three elements respectively contain the city, the plz and the country
+          # add the plz and city to the address
+          addr = addr + addr_parts[-2] + addr_parts[-3]
         kiez = adresse[1].strip() if len(adresse) > 1 else ""
 
         # Bild
