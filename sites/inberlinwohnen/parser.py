@@ -131,12 +131,14 @@ def parse(html_input):
             .split(",")
         )
         addr = adresse[0]
+        plz = ""
         if marker:= markers.get(id):
           location = geolocator.reverse((marker["lat"], marker["long"]))
-          addr_parts = location.address.split(",")
+          addr_parts: list[str] = location.address.split(",")
           # the last three elements respectively contain the city, the plz and the country
           # add the plz and city to the address
           addr = addr + addr_parts[-2] + addr_parts[-3]
+          plz = addr_parts[-2].strip()
         kiez = adresse[1].strip() if len(adresse) > 1 else ""
 
         # Bild
@@ -180,6 +182,7 @@ def parse(html_input):
             "date_found": datetime.datetime.now().strftime("%d.%m.%Y %H:%M"),
             "title": title,
             "addr": addr,
+            "plz": plz,
             "kiez": kiez if len(kiez) > 0 else "-",
             "pos": markers[id] if id in markers else None,
             "link": quote(urljoin(base_url, link), safe=":/"),

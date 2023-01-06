@@ -3,6 +3,8 @@ import logging
 
 from lxml import etree
 
+from sites.helpers import parse_plz
+
 logger = logging.getLogger(__name__)
 
 xmlforms_ns = {
@@ -39,6 +41,8 @@ def parse(xml_input):
             .text.replace("(Beispielobjekt)", "")
             .strip()
         )
+        if plz := parse_plz(flat_dict["addr"]):
+            flat_dict["plz"] = plz
         flat_dict["kiez"] = ""
 
         # id will somehow change every 30min, so instead we need to derive something from title and address

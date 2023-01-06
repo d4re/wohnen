@@ -7,6 +7,8 @@ from urllib.parse import quote, urljoin
 
 from lxml import html
 
+from sites.helpers import parse_plz
+
 logger = logging.getLogger(__name__)
 
 """
@@ -88,6 +90,8 @@ def parse(html_input):
         )
         flat_dict["addr"] = re.sub("\n\s+", " ", flat_dict["addr"])
         flat_dict["addr"] = flat_dict["addr"].replace(",", ", ")
+
+        flat_dict["plz"] = parse_plz(flat_dict["addr"])
 
         flat_dict["kiez"] = (
             flat.xpath(".//p[contains(@class,'category')]")[0].text_content().strip()
