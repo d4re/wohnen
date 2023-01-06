@@ -33,16 +33,23 @@ def filter_list(flats, search_config: config.Search):
 
         # now check the block list
         for field, words in filter.block.items():
-            text = ""
-            if field in flat:  # try direct fields
-                text = flat[field].lower()
-            elif field in flat["properties"]:  # try also properties
-                text = flat["properties"][field].lower()
+            text = get_field(flat, field)
 
             for word in words:
                 if word in text:
                     logging.info(
                         f"Skipped entry \"{flat['title']}\" due to \"{word}\" in {field}"
+                    )
+                    skip = True
+
+        # now check the required list (the value of field should be one of the required values for the field)
+        for field, words in filter.require.items():
+            text = get_field(flat, field)
+
+            if text:
+                if not text in words:
+                    logging.info(
+                        f"Skipped entry \"{flat['title']}\" since \"{text}\" in {field} is not in required list"
                     )
                     skip = True
 
@@ -79,6 +86,14 @@ def filter_list(flats, search_config: config.Search):
         flat_list.append(flat)
 
     return flat_list
+
+def get_field(flat, field):
+    text = ""
+    if field in flat:  # try direct fields
+        text = flat[field].lower()
+    elif field in flat["properties"]:  # try also properties
+        text = flat["properties"][field].lower()
+    return text
 
 
 def parse_number(number_str: Union[str, int]) -> Decimal:
