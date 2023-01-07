@@ -53,7 +53,9 @@ async def update(
     maps_api = "https://maps.googleapis.com/maps/api/staticmap?center={center}&zoom={zoom}&size=500x500&scale=2{marker_query}&key={key}"
     sites = await find_flats(conf.search, cache_folder)
     if conf.general.auto_apply:
-        await apply_to_flats(sites, conf.applicant)
+        sent_application = await apply_to_flats(sites, conf.applicant)
+        if sent_application:
+            await context.bot.send_message(conf.telegram.ids[0], "Application automatically sent!")
     flats = []
     for name, site in sites.items():
         for flat in site:
