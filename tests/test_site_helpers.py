@@ -1,7 +1,15 @@
 from decimal import Decimal
 
-from sites.helpers import parse_number
+from sites.helpers import parse_number, parse_plz
 
+def test_parse_plz():
+    tests= {
+        "Seehausener Stra\u00dfe 60, 13057 Berlin": "13057",
+        "Gensinger Str. 82, 10315 Berlin": "10315",
+        "10243 Berlin": "10243"
+    }
+    for val, expected in tests.items():
+        assert parse_plz(val) == expected
 
 def test_parse_number():
     tests = {
