@@ -8,6 +8,7 @@ import urllib
 from urllib.parse import quote, urljoin
 
 from lxml import html
+from sites.helpers import parse_number
 
 logger = logging.getLogger(__name__)
 
@@ -114,9 +115,9 @@ def parse(html_input):
         flat_dict["properties"]["Miete"] = middle.xpath(
             ".//p[contains(@class,'aditem-main--middle--price')]"
         )[0].text_content()
-        flat_dict["properties"]["Miete"] = re.sub(
+        flat_dict["properties"]["Miete"] = parse_number(re.sub(
             "\n\s+", "", flat_dict["properties"]["Miete"]
-        )
+        ))
         flat_dict["properties"]["Beschreibung"] = middle.xpath(
             ".//p[contains(@class,'aditem-main--middle--description')]"
         )[0].text_content()
@@ -128,9 +129,9 @@ def parse(html_input):
         for tag in tags:
             text: str = tag.text_content()
             if text.count("m²"):
-                flat_dict["properties"]["area"] = text
+                flat_dict["properties"]["area"] = parse_number(text)
             elif text.count("Zimmer"):
-                flat_dict["properties"]["rooms"] = text
+                flat_dict["properties"]["rooms"] = parse_number(text)
             else:
                 misc.append(text)
         if misc:

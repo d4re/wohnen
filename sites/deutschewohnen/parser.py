@@ -107,19 +107,8 @@ def parse(html_input):
             "isTopLevel": "Oberstes Stockwerk",
         }
         for field, name in possible_fields.items():
-            if field not in flat:
-                continue
-
-            value = str(flat[field])
-
-            if field in ["price", "heatingCosts"]:
-                value += " €"
-            elif field == "area":
-                value += " m²"
-            elif field == "isTopLevel":
-                value = "Ja" if value else "Nein"
-
-            flat_dict["properties"][name] = value
+            if field in flat:
+                flat_dict["properties"][name] = flat[field]
 
         flat_dict["features"] = []
         flat_dict["landlord"] = "Deutsche Wohnen"

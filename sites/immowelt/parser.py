@@ -99,7 +99,7 @@ def parse(html_input):
 
         flat_dict["properties"] = {
             "rooms": flat["roomsMin"],
-            "area": f"{flat['primaryArea']['sizeMin']} m²",
+            "area": flat['primaryArea']['sizeMin'],
         }
         if "contructionYear" in flat:
             flat_dict["properties"]["Baujahr"] = flat["constructionYear"]
@@ -116,7 +116,7 @@ def parse(html_input):
                 name = price_type_map[price["type"]]
             else:
                 name = price["type"]
-            flat_dict["properties"][name] = f"{price['amountMin']} €"
+            flat_dict["properties"][name] = price['amountMin']
 
         flat_dict["features"] = []
         for feature in flat["features"]:

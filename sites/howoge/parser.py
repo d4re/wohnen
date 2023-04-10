@@ -3,7 +3,7 @@ import logging
 
 from lxml import etree
 
-from sites.helpers import parse_plz
+from sites.helpers import NUMBER_TYPES, parse_number, parse_plz
 
 logger = logging.getLogger(__name__)
 
@@ -63,9 +63,15 @@ def parse(xml_input):
             if title == "District":
                 flat_dict["kiez"] = property.text.strip()
                 continue
+            
             title = property_mapping.get(title, title)
 
-            flat_dict["properties"][title] = property.text.strip()
+            value = property.text.strip()
+
+            if title in NUMBER_TYPES:
+                value = parse_number(value)
+
+            flat_dict["properties"][title] = value
 
         flat_dict["link"] = base_url
 

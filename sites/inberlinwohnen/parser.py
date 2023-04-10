@@ -9,6 +9,7 @@ from urllib.parse import quote, urljoin
 from geopy.geocoders import Nominatim
 
 from lxml import html
+from sites.helpers import NUMBER_TYPES, parse_number
 
 logger = logging.getLogger(__name__)
 
@@ -168,7 +169,8 @@ def parse(html_input):
                 + [html.tostring(el).decode("utf-8") for el in prop_val_el]
             )
             prop_val = prop_val.replace("<br>", " ")
-
+            if prop_key in NUMBER_TYPES:
+                prop_val = parse_number(prop_val)
             props[prop_key] = prop_val
 
         # Besonderheiten

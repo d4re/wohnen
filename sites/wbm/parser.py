@@ -7,7 +7,7 @@ from urllib.parse import quote, urljoin
 
 from lxml import html
 
-from sites.helpers import parse_plz
+from sites.helpers import NUMBER_TYPES, parse_number, parse_plz
 
 logger = logging.getLogger(__name__)
 
@@ -108,6 +108,8 @@ def parse(html_input):
             key = kv[0].text_content().replace(":", "")
             key = property_map.get(key, key)
             value = kv[1].text_content()
+            if key in NUMBER_TYPES:
+                value = parse_number(value)
             flat_dict["properties"][key] = value
 
         # Besonderheiten
