@@ -66,7 +66,7 @@ def parse(html_input):
     property_map = {
         "Größe": "area",
         "Zimmer": "rooms",
-        "Gesamtmiete": "rent_total",
+        "Warmmiete": "rent_total",
     }
 
     # parse results
@@ -86,7 +86,7 @@ def parse(html_input):
         flat_dict["link"] = quote(urljoin(base_url, flat_dict["link"]), safe=":/")
 
         flat_dict["addr"] = (
-            flat.xpath(".//p[contains(@class,'address')]")[0].text_content().strip()
+            flat.xpath(".//div[contains(@class,'address')]")[0].text_content().strip()
         )
         flat_dict["addr"] = re.sub("\n\s+", " ", flat_dict["addr"])
         flat_dict["addr"] = flat_dict["addr"].replace(",", ", ")
@@ -94,7 +94,7 @@ def parse(html_input):
         flat_dict["plz"] = parse_plz(flat_dict["addr"])
 
         flat_dict["kiez"] = (
-            flat.xpath(".//p[contains(@class,'category')]")[0].text_content().strip()
+            flat.xpath(".//div[contains(@class,'area')]")[0].text_content().strip()
         )
 
         flat_dict["date_found"] = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
