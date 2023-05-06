@@ -14,6 +14,7 @@ class FlatParams(BaseModel):
     area_min: int
     rooms_min: int
     rooms_max: int
+    rent_base_min: int
     rent_base_max: int
     rent_total_max: int
     wbs: int
@@ -45,6 +46,7 @@ class Maps(BaseModel):
     key: str
     zoom: int
 
+
 class Applicant(BaseModel):
     forename: str
     surname: str
@@ -61,7 +63,6 @@ class Config(BaseModel):
     telegram: Telegram
     maps: Maps
     applicant: Applicant
-
 
 
 def load_config(config_file) -> Config:

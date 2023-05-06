@@ -14,6 +14,7 @@ search:
     area_min: 50
     rooms_min: 2
     rooms_max: 4
+    rent_base_min: 500
     rent_base_max: 1600
     rent_total_max: 1600
     wbs: 0
