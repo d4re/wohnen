@@ -2,7 +2,7 @@ import requests
 
 from config import FlatParams
 
-search_url = "https://www.wbm.de/wohnungen-berlin/angebote-wbm/"
+search_url = "https://www.wbm.de/wohnungen-berlin/angebote/"
 
 search_headers = {
     "accept": "*/*",
