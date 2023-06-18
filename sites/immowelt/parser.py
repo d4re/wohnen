@@ -47,7 +47,6 @@ price_type_map = {
 
 
 def parse(html_input):
-
     object_url = "https://www.immowelt.de/expose/"
 
     if isinstance(html, bytes):
@@ -82,7 +81,7 @@ def parse(html_input):
         if "houseNumber" in flat["place"]:
             addr += f" {flat['place']['houseNumber']}, "
         flat_dict["addr"] = f"{addr}{flat['place']['postcode']} {flat['place']['city']}"
-        flat_dict["plz"] = flat['place']['postcode']
+        flat_dict["plz"] = flat["place"]["postcode"]
         flat_dict["kiez"] = ""
         if "district" in flat["place"]:
             flat_dict["kiez"] = flat["place"]["district"]
@@ -99,7 +98,7 @@ def parse(html_input):
 
         flat_dict["properties"] = {
             "rooms": flat["roomsMin"],
-            "area": flat['primaryArea']['sizeMin'],
+            "area": flat["primaryArea"]["sizeMin"],
         }
         if "contructionYear" in flat:
             flat_dict["properties"]["Baujahr"] = flat["constructionYear"]
@@ -116,7 +115,7 @@ def parse(html_input):
                 name = price_type_map[price["type"]]
             else:
                 name = price["type"]
-            flat_dict["properties"][name] = price['amountMin']
+            flat_dict["properties"][name] = price["amountMin"]
 
         flat_dict["features"] = []
         for feature in flat["features"]:
@@ -127,7 +126,8 @@ def parse(html_input):
 
         flat_dict["landlord"] = ""
         if (
-            "companyName" in flat["broker"]
+            "broker" in flat
+            and "companyName" in flat["broker"]
             and flat["broker"]["companyName"] is not None
             and len(flat["broker"]["companyName"]) > 0
         ):
