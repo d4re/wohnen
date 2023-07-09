@@ -70,7 +70,7 @@ def filter_list(flats, search_config: config.Search):
                 continue
 
         if rent := props.get("rent_total"):
-            if restrictions.rent_base_min > rent > restrictions.rent_total_max:
+            if rent > restrictions.rent_total_max or rent < restrictions.rent_base_min:
                 logger.info(
                     f"Skipped appartment {flat['title']} due to rent: {rent}"
                 )
