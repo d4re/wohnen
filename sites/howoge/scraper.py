@@ -1,4 +1,5 @@
 import base64
+import functools
 import uuid
 from datetime import datetime
 from urllib.parse import urlencode
@@ -813,6 +814,7 @@ xmlforms_ns = {
 default_params = {"api": "6.139", "sap-language": "de"}
 
 s = requests.Session()
+s.request = functools.partial(s.request, timeout=5)
 
 search_headers = {
     "accept": "*/*",
@@ -836,7 +838,6 @@ s.cookies.update({"esq-alias": "/meinehowoge", "sap-usercontext": "sap-client=45
 
 
 def scrape(flat_params: FlatParams):
-
     api_params = {}
     api_params.update(default_params)
 

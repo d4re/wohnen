@@ -20,7 +20,7 @@ search_headers = {
 def scrape(flat_params: FlatParams):
     search_url = search_url_tpl.replace("{max_rent}", str(flat_params.rent_total_max))
 
-    search = requests.get(search_url, headers=search_headers)
+    search = requests.get(search_url, headers=search_headers, timeout=5)
     search.raise_for_status()
 
     return search.text.encode("utf-8")

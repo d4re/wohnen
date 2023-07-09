@@ -42,7 +42,7 @@ def get_search(flat_params: FlatParams):
 def scrape(flat_params: FlatParams):
     search_d = get_search(flat_params)
     search = requests.post(
-        search_url, data=json.dumps(search_d), headers=search_headers
+        search_url, data=json.dumps(search_d), headers=search_headers, timeout=5
     )
     search.raise_for_status()
 

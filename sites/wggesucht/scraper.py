@@ -18,14 +18,13 @@ search_headers = {
 
 
 def scrape(flat_params: FlatParams):
-
     search_url = (
         search_url_tpl.replace("{area_min}", str(flat_params.area_min))
         .replace("{rent_total_max}", str(flat_params.rent_total_max + 200))
         .replace("{rooms_min}", str(flat_params.rooms_min))
     )
 
-    search = requests.get(search_url, headers=search_headers)
+    search = requests.get(search_url, headers=search_headers, timeout=5)
     search.raise_for_status()
 
     # override encoding by real educated guess

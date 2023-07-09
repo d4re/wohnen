@@ -1,3 +1,4 @@
+import functools
 import logging
 import time
 
@@ -8,6 +9,7 @@ from config import FlatParams
 logger = logging.getLogger(__name__)
 
 s = requests.Session()
+s.request = functools.partial(s.request, timeout=5)
 
 search_url = "https://inberlinwohnen.de/wp-content/themes/ibw/skript/wohnungsfinder.php"
 
@@ -91,9 +93,9 @@ def scrape(flat_params: FlatParams):
     # It seemst to work without, but better to mimick more
     logger.debug("Sleeping for two seconds before querying for the results")
     time.sleep(2.0)
-    
+
     try:
-        html_result = s.post(search_url, data=result_data, headers=search_headers, timeout=10)
+        html_result = s.post(search_url, data=result_data, headers=search_headers)
     except requests.exceptions.Timeout:
         logger.info("Timed out, skipping inberlinwohnen.")
 

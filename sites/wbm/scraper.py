@@ -18,7 +18,7 @@ search_headers = {
 
 
 def scrape(flat_params: FlatParams):
-    search = requests.get(search_url, headers=search_headers)
+    search = requests.get(search_url, headers=search_headers, timeout=5)
     search.raise_for_status()
 
     # override encoding by real educated guess
