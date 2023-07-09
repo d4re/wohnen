@@ -89,9 +89,12 @@ def scrape(flat_params: FlatParams):
 
     # The web UI sleeps for a few seconds here, lets mimick that
     # It seemst to work without, but better to mimick more
-    logger.debug("Sleeping for a second before querying for the results")
-    time.sleep(1.0)
-
-    html_result = s.post(search_url, data=result_data, headers=search_headers)
+    logger.debug("Sleeping for two seconds before querying for the results")
+    time.sleep(2.0)
+    
+    try:
+        html_result = s.post(search_url, data=result_data, headers=search_headers, timeout=10)
+    except requests.exceptions.Timeout:
+        logger.info("Timed out, skipping inberlinwohnen.")
 
     return html_result.text.encode("utf-8")
