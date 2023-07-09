@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import datetime
+from functools import lru_cache
 import json
 import logging
 import re
@@ -12,6 +13,9 @@ from lxml import html
 from sites.helpers import NUMBER_TYPES, parse_number
 
 logger = logging.getLogger(__name__)
+
+geolocator = Nominatim(user_agent="flat_finder")
+reverse = lru_cache(maxsize=1000)(geolocator.reverse)
 
 
 def parse(html_input):
@@ -96,8 +100,6 @@ def parse(html_input):
         "Gesamtmiete": "rent_total",
     }
 
-    geolocator = Nominatim(user_agent="flat_finder")
-
     results = json.loads(html_input)
 
     # get location markers first
@@ -109,8 +111,6 @@ def parse(html_input):
             if marker_id_s:
                 marker_id = marker_id_s.group(1)
                 markers[marker_id] = {"lat": marker[0], "long": marker[1]}
-
-     
 
     # parse results
     tree = html.fromstring(results["searchresults"])
@@ -133,13 +133,13 @@ def parse(html_input):
         )
         addr = adresse[0]
         plz = ""
-        if marker:= markers.get(id):
-          location = geolocator.reverse((marker["lat"], marker["long"]))
-          addr_parts: list[str] = location.address.split(",")
-          # the last three elements respectively contain the city, the plz and the country
-          # add the plz and city to the address
-          addr = addr + addr_parts[-2] + addr_parts[-3]
-          plz = addr_parts[-2].strip()
+        if marker := markers.get(id):
+            location = reverse((marker["lat"], marker["long"]))
+            addr_parts: list[str] = location.address.split(",")
+            # the last three elements respectively contain the city, the plz and the country
+            # add the plz and city to the address
+            addr = addr + addr_parts[-2] + addr_parts[-3]
+            plz = addr_parts[-2].strip()
         kiez = adresse[1].strip() if len(adresse) > 1 else ""
 
         # Bild
